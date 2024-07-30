@@ -1,0 +1,21 @@
+.idea/
+.yarn/
+
+node_modules/
+coverage/
+
+coverage.json
+
+typechain/
+typechain-types/
+
+# Hardhat files
+cache/
+artifacts/
+
+.env
+accounts.json
+deployed-local.json
+
+# MacOS
+.DS_Store
