@@ -3,7 +3,8 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy": "HH_ACCOUNTS_LOAD=true hardhat run scripts/deploy.ts"
+    "deploy": "hardhat run scripts/deploy.ts",
+    "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {

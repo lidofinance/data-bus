@@ -6,9 +6,11 @@ import "@nomicfoundation/hardhat-verify";
 import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
-import { networkWithSecureAccount, secureAccountsPlugin } from "./lib";
+import { accountsPlugin } from "./lib";
+
+accountsPlugin(["gnosis", "chiado"]);
+
 dotenv.config();
-secureAccountsPlugin(["gnosis", "chiado"]);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
@@ -16,10 +18,10 @@ const config: HardhatUserConfig = {
     // gnosis: networkWithSecureAccount("gnosis", {
     //   url: "https://rpc.gnosischain.com",
     // }),
-    chiado: networkWithSecureAccount("chiado", {
+    chiado: {
       url: "https://gnosis-chiado-rpc.publicnode.com",
       gasPrice: 1000000000,
-    }),
+    },
     // chiado: {
     //   url: "https://gnosis-chiado-rpc.publicnode.com",
     //   gasPrice: 1000000000,

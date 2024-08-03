@@ -8,7 +8,7 @@
 ### Chiado — gnosis testnet
 1. Create account
 ```sh
-npx hardhat create-account --network chiado 
+yarn create-account --network chiado
 ```
 2. Visit website https://faucet.chiadochain.net/ and earn some xDAI
 3. Deploy

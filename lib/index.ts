@@ -1,2 +1,2 @@
-export * from "./secureAccountsPlugin";
+export * from "./accountsPlugin";
 export * from "./accounts";
