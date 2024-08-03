@@ -29,7 +29,7 @@ describe("DSMDataBus", function () {
   it("should measure gas for sendDepositMessage", async function () {
     const depositData = {
       guardianIndex: 1,
-      depositRoot: "root",
+      depositRoot: "0x" + "0".repeat(64),
       nonce: 1,
       blockNumber: 100,
       blockHash: encodeBytes32String("hash"),
@@ -43,7 +43,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendDepositMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(35965);
+    expect(gasUsed).to.be.equal(34767);
   });
 
   it("should measure gas for sendUnvetMessage", async function () {
@@ -64,13 +64,13 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendUnvetMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(38096);
+    expect(gasUsed).to.be.equal(38052);
   });
 
   it("should measure gas for sendPauseMessageV2", async function () {
     const pauseV2Data = {
       guardianIndex: 1,
-      depositRoot: "root",
+      depositRoot: "0x" + "0".repeat(64),
       nonce: 1,
       blockNumber: 100,
       blockHash: encodeBytes32String("hash"),
@@ -84,7 +84,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPauseMessageV2:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(36063);
+    expect(gasUsed).to.be.equal(34777);
   });
 
   it("should measure gas for sendPauseMessageV3", async function () {

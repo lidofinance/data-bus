@@ -28,13 +28,13 @@ contract DSMDataBus {
      * @dev Struct containing data related to deposits.
      */
     struct DepositData {
-        uint guardianIndex;
-        string depositRoot;
-        uint nonce;
-        uint blockNumber;
+        int256 guardianIndex;
+        bytes32 depositRoot;
+        uint256 nonce;
+        uint256 blockNumber;
         bytes32 blockHash;
         bytes signature;
-        uint stakingModuleId;
+        uint256 stakingModuleId;
         AppMetaData appMeta;
     }
 
@@ -42,13 +42,13 @@ contract DSMDataBus {
      * @dev Struct containing data related to version 2 of the pause functionality.
      */
     struct PauseV2Data {
-        uint guardianIndex;
-        string depositRoot;
-        uint nonce;
-        uint blockNumber;
+        int256 guardianIndex;
+        bytes32 depositRoot;
+        uint256 nonce;
+        uint256 blockNumber;
         bytes32 blockHash;
         bytes signature;
-        uint stakingModuleId;
+        uint256 stakingModuleId;
         AppMetaData appMeta;
     }
 
@@ -56,8 +56,8 @@ contract DSMDataBus {
      * @dev Struct containing data related to version 3 of the pause functionality.
      */
     struct PauseV3Data {
-        uint guardianIndex;
-        uint blockNumber;
+        int256 guardianIndex;
+        uint256 blockNumber;
         bytes signature;
         AppMetaData appMeta;
     }
@@ -66,11 +66,11 @@ contract DSMDataBus {
      * @dev Struct containing data related to unvetted operations.
      */
     struct UnvetData {
-        uint guardianIndex;
-        uint nonce;
-        uint blockNumber;
+        int256 guardianIndex;
+        uint256 nonce;
+        uint256 blockNumber;
         bytes32 blockHash;
-        uint stakingModuleId;
+        uint256 stakingModuleId;
         bytes signature;
         string operatorIds;
         string vettedKeysByOperator;
@@ -127,9 +127,12 @@ contract DSMDataBus {
      * @param _appMeta The metadata of the application.
      */
     function sendPingMessage(AppMetaData calldata _appMeta) public {
-        require(bytes(_appMeta.version).length > 0, "Version must not be empty");
+        require(
+            bytes(_appMeta.version).length > 0,
+            "Version must not be empty"
+        );
         require(bytes(_appMeta.name).length > 0, "Name must not be empty");
-        
+
         emit MessagePing(MessageType.PING, msg.sender, _appMeta);
     }
 
@@ -139,10 +142,16 @@ contract DSMDataBus {
      */
     function sendDepositMessage(DepositData calldata _depositData) public {
         require(_depositData.guardianIndex > 0, "Invalid guardian index");
-        require(bytes(_depositData.depositRoot).length > 0, "Deposit root must not be empty");
+        require(
+            _depositData.depositRoot.length > 0,
+            "Deposit root must not be empty"
+        );
         require(_depositData.blockNumber > 0, "Invalid block number");
         require(_depositData.blockHash != bytes32(0), "Invalid block hash");
-        require(_depositData.signature.length > 0, "Signature must not be empty");
+        require(
+            _depositData.signature.length > 0,
+            "Signature must not be empty"
+        );
 
         emit MessageDeposit(MessageType.DEPOSIT, msg.sender, _depositData);
     }
@@ -157,8 +166,14 @@ contract DSMDataBus {
         require(_unvetData.blockNumber > 0, "Invalid block number");
         require(_unvetData.blockHash != bytes32(0), "Invalid block hash");
         require(_unvetData.signature.length > 0, "Signature must not be empty");
-        require(bytes(_unvetData.operatorIds).length > 0, "Operator IDs must not be empty");
-        require(bytes(_unvetData.vettedKeysByOperator).length > 0, "Vetted keys must not be empty");
+        require(
+            bytes(_unvetData.operatorIds).length > 0,
+            "Operator IDs must not be empty"
+        );
+        require(
+            bytes(_unvetData.vettedKeysByOperator).length > 0,
+            "Vetted keys must not be empty"
+        );
 
         emit MessageUnvet(MessageType.UNVET, msg.sender, _unvetData);
     }
@@ -167,13 +182,19 @@ contract DSMDataBus {
      * @dev Sends a pause message (version 2).
      * @param _pauseV2Data The data related to the pause operation (version 2).
      */
-     function sendPauseMessageV2(PauseV2Data calldata _pauseV2Data) public {
+    function sendPauseMessageV2(PauseV2Data calldata _pauseV2Data) public {
         require(_pauseV2Data.guardianIndex > 0, "Invalid guardian index");
-        require(bytes(_pauseV2Data.depositRoot).length > 0, "Deposit root must not be empty");
+        require(
+            _pauseV2Data.depositRoot.length > 0,
+            "Deposit root must not be empty"
+        );
         require(_pauseV2Data.nonce > 0, "Invalid nonce");
         require(_pauseV2Data.blockNumber > 0, "Invalid block number");
         require(_pauseV2Data.blockHash != bytes32(0), "Invalid block hash");
-        require(_pauseV2Data.signature.length > 0, "Signature must not be empty");
+        require(
+            _pauseV2Data.signature.length > 0,
+            "Signature must not be empty"
+        );
 
         emit MessagePauseV2(MessageType.PAUSE, msg.sender, _pauseV2Data);
     }
@@ -185,7 +206,10 @@ contract DSMDataBus {
     function sendPauseMessageV3(PauseV3Data calldata _pauseV3Data) public {
         require(_pauseV3Data.guardianIndex > 0, "Invalid guardian index");
         require(_pauseV3Data.blockNumber > 0, "Invalid block number");
-        require(_pauseV3Data.signature.length > 0, "Signature must not be empty");
+        require(
+            _pauseV3Data.signature.length > 0,
+            "Signature must not be empty"
+        );
 
         emit MessagePauseV3(MessageType.PAUSE, msg.sender, _pauseV3Data);
     }
