@@ -1,16 +1,16 @@
 import { HardhatUserConfig } from "hardhat/types";
 import { mochaRootHooks } from "./test/hooks";
 
-import dotenv from "dotenv";
 import "@nomicfoundation/hardhat-verify";
 import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
 import { accountsPlugin } from "./lib";
+import { parseEnv } from "./lib/config";
 
 accountsPlugin(["gnosis", "chiado"]);
 
-dotenv.config();
+const envConfig = parseEnv(process.env);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
@@ -19,7 +19,7 @@ const config: HardhatUserConfig = {
     //   url: "https://rpc.gnosischain.com",
     // }),
     local: {
-        url: `http://127.0.0.1:${process.env.LOCAL_NET_PORT}`
+      url: envConfig.NODE_HOST,
     },
     chiado: {
       url: "https://gnosis-chiado-rpc.publicnode.com",
@@ -57,7 +57,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       //4) Insert your Gnosisscan API key
       //blockscout explorer verification does not require keys
-      chiado: process.env.CHIADO_BLOCKSCOUT as string,
+      chiado: envConfig.CHIADO_BLOCKSCOUT,
       // gnosis: "your key",
     },
   },
