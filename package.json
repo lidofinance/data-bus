@@ -1,9 +1,10 @@
 {
   "name": "dsm-data-bus",
   "scripts": {
-    "compile": "hardhat compile",
+    "compile": "hardhat compile && yarn abi",
     "test": "hardhat test",
     "deploy": "hardhat run scripts/deploy.ts",
+    "abi": "hardhat run scripts/abi.ts",
     "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account"
   },
   "packageManager": "yarn@4.3.1",
