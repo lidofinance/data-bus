@@ -68,18 +68,17 @@ export const secureAccountsPlugin = (networks: string[]) =>
       createAccount(currentNetworkName);
     });
 
-    task(
-      "get-accounts",
-      "Decrypt and prints accounts"
-    ).setAction(async (_, hre) => {
-      const currentNetworkName = hre.network.name;
-      const accounts = loadAccounts(currentNetworkName);
+    task("get-accounts", "Decrypt and prints accounts").setAction(
+      async (_, hre) => {
+        const currentNetworkName = hre.network.name;
+        const accounts = loadAccounts(currentNetworkName);
 
-      accounts.forEach(w => {
-        const { privateKey, publicKey, address, mnemonic } = w
-        console.log({ privateKey, publicKey, address, mnemonic })
-      })
-    });
+        accounts.forEach((w) => {
+          const { privateKey, publicKey, address, mnemonic } = w;
+          console.log({ privateKey, publicKey, address, mnemonic });
+        });
+      }
+    );
 
     task("test", async (_, hre, runSuper) => {
       validateHHEnv(networks, hre);

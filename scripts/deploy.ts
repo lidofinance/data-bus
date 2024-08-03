@@ -8,8 +8,9 @@ async function main() {
   const contract = await DataBus.deploy();
 
   console.log("Contract deployed at:", await contract.getAddress());
-  const tx = contract.deploymentTransaction()
-  await tx?.wait()
+  const tx = contract.deploymentTransaction();
+  await tx?.wait();
+
   await run(`verify:verify`, {
     address: await contract.getAddress(),
   });
