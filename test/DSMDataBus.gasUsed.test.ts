@@ -35,7 +35,7 @@ describe("DSMDataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1,
-      appMeta: { version: "1.0", name: "AppName" },
+      app: { version: "1.0", name: "AppName" },
     };
     const tx = await dataBus.sendDepositMessage(depositData);
     const receipt = await getReceipt(tx);
@@ -56,7 +56,7 @@ describe("DSMDataBus", function () {
       signature: "0x" + "0".repeat(130),
       operatorIds: "operator1",
       vettedKeysByOperator: "keys",
-      appMeta: { version: "1.0", name: "AppName" },
+      app: { version: "1.0", name: "AppName" },
     };
     const tx = await dataBus.sendUnvetMessage(unvetData);
     const receipt = await getReceipt(tx);
@@ -76,7 +76,7 @@ describe("DSMDataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1,
-      appMeta: { version: "1.0", name: "AppName" },
+      app: { version: "1.0", name: "AppName" },
     };
     const tx = await dataBus.sendPauseMessageV2(pauseV2Data);
     const receipt = await getReceipt(tx);
@@ -92,7 +92,7 @@ describe("DSMDataBus", function () {
       guardianIndex: 1,
       blockNumber: 100,
       signature: "0x" + "0".repeat(130),
-      appMeta: { version: "1.0", name: "AppName" },
+      app: { version: "1.0", name: "AppName" },
     };
     const tx = await dataBus.sendPauseMessageV3(pauseV3Data);
     const receipt = await getReceipt(tx);

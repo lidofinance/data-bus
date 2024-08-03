@@ -35,7 +35,7 @@ contract DSMDataBus {
         bytes32 blockHash;
         bytes signature;
         uint256 stakingModuleId;
-        AppMetaData appMeta;
+        AppMetaData app;
     }
 
     /**
@@ -49,7 +49,7 @@ contract DSMDataBus {
         bytes32 blockHash;
         bytes signature;
         uint256 stakingModuleId;
-        AppMetaData appMeta;
+        AppMetaData app;
     }
 
     /**
@@ -59,7 +59,7 @@ contract DSMDataBus {
         int256 guardianIndex;
         uint256 blockNumber;
         bytes signature;
-        AppMetaData appMeta;
+        AppMetaData app;
     }
 
     /**
@@ -74,7 +74,7 @@ contract DSMDataBus {
         bytes signature;
         string operatorIds;
         string vettedKeysByOperator;
-        AppMetaData appMeta;
+        AppMetaData app;
     }
 
     /**
@@ -119,7 +119,7 @@ contract DSMDataBus {
     event MessagePing(
         MessageType indexed messageType,
         address indexed guardianAddress,
-        AppMetaData data
+        AppMetaData app
     );
 
     /**
