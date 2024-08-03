@@ -7,16 +7,6 @@ pragma solidity ^0.8.20;
  */
 contract DSMDataBus {
     /**
-     * @dev Enum representing the type of messages.
-     */
-    enum MessageType {
-        PAUSE,
-        DEPOSIT,
-        UNVET,
-        PING
-    }
-
-    /**
      * @dev Struct containing metadata about the application.
      */
     struct AppMetaData {
@@ -91,7 +81,6 @@ contract DSMDataBus {
      * @dev Emitted when a deposit message is sent.
      */
     event MessageDeposit(
-        MessageType indexed messageType,
         address indexed guardianAddress,
         DepositData data
     );
@@ -100,7 +89,6 @@ contract DSMDataBus {
      * @dev Emitted when a pause message (version 2) is sent.
      */
     event MessagePauseV2(
-        MessageType indexed messageType,
         address indexed guardianAddress,
         PauseV2Data data
     );
@@ -109,7 +97,6 @@ contract DSMDataBus {
      * @dev Emitted when a pause message (version 3) is sent.
      */
     event MessagePauseV3(
-        MessageType indexed messageType,
         address indexed guardianAddress,
         PauseV3Data data
     );
@@ -118,7 +105,6 @@ contract DSMDataBus {
      * @dev Emitted when an unvet message is sent.
      */
     event MessageUnvet(
-        MessageType indexed messageType,
         address indexed guardianAddress,
         UnvetData data
     );
@@ -127,7 +113,6 @@ contract DSMDataBus {
      * @dev Emitted when a ping message is sent.
      */
     event MessagePing(
-        MessageType indexed messageType,
         address indexed guardianAddress,
         PingData data
     );
@@ -155,7 +140,7 @@ contract DSMDataBus {
 
         _validateAppData(_pingData.app);
 
-        emit MessagePing(MessageType.PING, msg.sender, _pingData);
+        emit MessagePing(msg.sender, _pingData);
     }
 
     /**
@@ -177,7 +162,7 @@ contract DSMDataBus {
 
         _validateAppData(_depositData.app);
 
-        emit MessageDeposit(MessageType.DEPOSIT, msg.sender, _depositData);
+        emit MessageDeposit(msg.sender, _depositData);
     }
 
     /**
@@ -201,7 +186,7 @@ contract DSMDataBus {
 
         _validateAppData(_unvetData.app);
 
-        emit MessageUnvet(MessageType.UNVET, msg.sender, _unvetData);
+        emit MessageUnvet(msg.sender, _unvetData);
     }
 
     /**
@@ -224,7 +209,7 @@ contract DSMDataBus {
 
         _validateAppData(_pauseV2Data.app);
 
-        emit MessagePauseV2(MessageType.PAUSE, msg.sender, _pauseV2Data);
+        emit MessagePauseV2(msg.sender, _pauseV2Data);
     }
 
     /**
@@ -241,6 +226,6 @@ contract DSMDataBus {
 
         _validateAppData(_pauseV3Data.app);
 
-        emit MessagePauseV3(MessageType.PAUSE, msg.sender, _pauseV3Data);
+        emit MessagePauseV3(msg.sender, _pauseV3Data);
     }
 }
