@@ -6,11 +6,11 @@ import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
 import { accountsPlugin } from "./lib";
-import { parseEnv } from "./lib/config";
+import { parseContractEnvConfig } from "./lib/config";
 
 accountsPlugin(["gnosis", "chiado"]);
 
-const envConfig = parseEnv(process.env);
+const envConfig = parseContractEnvConfig(process.env);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",

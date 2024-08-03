@@ -1,7 +1,7 @@
 import { run } from "hardhat";
-import { parseEnv } from "../lib/config";
+import { parseContractEnvConfig } from "../lib/config";
 
-const envConfig = parseEnv(process.env);
+const envConfig = parseContractEnvConfig(process.env);
 
 async function main() {
   const result = envConfig.NODE_HOST.match(/https?:\/\/([^:\/\s]+)(?::(\d+))?/);
