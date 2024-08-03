@@ -18,6 +18,9 @@ const config: HardhatUserConfig = {
     // gnosis: networkWithSecureAccount("gnosis", {
     //   url: "https://rpc.gnosischain.com",
     // }),
+    local: {
+        url: 'http://127.0.0.1:8545'
+    },
     chiado: {
       url: "https://gnosis-chiado-rpc.publicnode.com",
       gasPrice: 1000000000,
