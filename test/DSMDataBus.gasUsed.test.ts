@@ -23,7 +23,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPingMessage:", receipt.gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(27588);
+    expect(gasUsed).to.be.equal(27588);
   });
 
   it("should measure gas for sendDepositMessage", async function () {
@@ -43,7 +43,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendDepositMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(35965);
+    expect(gasUsed).to.be.equal(35965);
   });
 
   it("should measure gas for sendUnvetMessage", async function () {
@@ -64,7 +64,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendUnvetMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(38096);
+    expect(gasUsed).to.be.equal(38096);
   });
 
   it("should measure gas for sendPauseMessageV2", async function () {
@@ -84,7 +84,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPauseMessageV2:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(36063);
+    expect(gasUsed).to.be.equal(36063);
   });
 
   it("should measure gas for sendPauseMessageV3", async function () {
@@ -100,6 +100,6 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPauseMessageV3:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(31811);
+    expect(gasUsed).to.be.equal(31811);
   });
 });
