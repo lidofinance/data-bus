@@ -16,14 +16,19 @@ describe("DSMDataBus", function () {
   });
 
   it("should measure gas for sendPingMessage", async function () {
-    const appMeta = { version: "1.0", name: "AppName" };
-    const tx = await dataBus.sendPingMessage(appMeta);
+    const pingData = {
+      blockNumber: 100,
+      guardianIndex: 1,
+      stakingModuleIds: [1, 2],
+      app: { version: "1.0", name: "AppName" },
+    };
+    const tx = await dataBus.sendPingMessage(pingData);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
     console.log("Gas used for sendPingMessage:", receipt.gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(27588);
+    expect(gasUsed).to.be.equal(33445);
   });
 
   it("should measure gas for sendDepositMessage", async function () {
@@ -43,7 +48,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendDepositMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(34767);
+    expect(gasUsed).to.be.equal(36775);
   });
 
   it("should measure gas for sendUnvetMessage", async function () {
@@ -64,7 +69,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendUnvetMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(38052);
+    expect(gasUsed).to.be.equal(40039);
   });
 
   it("should measure gas for sendPauseMessageV2", async function () {
@@ -84,7 +89,7 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPauseMessageV2:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(34777);
+    expect(gasUsed).to.be.equal(36763);
   });
 
   it("should measure gas for sendPauseMessageV3", async function () {
@@ -100,6 +105,6 @@ describe("DSMDataBus", function () {
 
     console.log("Gas used for sendPauseMessageV3:", gasUsed.toString());
 
-    expect(gasUsed).to.be.equal(31811);
+    expect(gasUsed).to.be.equal(33798);
   });
 });

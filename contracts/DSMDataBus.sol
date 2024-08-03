@@ -78,6 +78,16 @@ contract DSMDataBus {
     }
 
     /**
+     * @dev Struct containing data related to ping operations.
+     */
+    struct PingData {
+        uint256 blockNumber;
+        int256 guardianIndex;
+        uint256[] stakingModuleIds;
+        AppMetaData app;
+    }
+
+    /**
      * @dev Emitted when a deposit message is sent.
      */
     event MessageDeposit(
@@ -119,21 +129,33 @@ contract DSMDataBus {
     event MessagePing(
         MessageType indexed messageType,
         address indexed guardianAddress,
-        AppMetaData app
+        PingData data
     );
 
     /**
-     * @dev Sends a ping message.
-     * @param _appMeta The metadata of the application.
+     * @dev Validate app meta data. This information is contained in every message.
+     * @param _appData The metadata of the application.
      */
-    function sendPingMessage(AppMetaData calldata _appMeta) public {
+    function _validateAppData(AppMetaData memory _appData) internal pure {
         require(
-            bytes(_appMeta.version).length > 0,
+            bytes(_appData.version).length > 0,
             "Version must not be empty"
         );
-        require(bytes(_appMeta.name).length > 0, "Name must not be empty");
+        require(bytes(_appData.name).length > 0, "Name must not be empty");
+    }
 
-        emit MessagePing(MessageType.PING, msg.sender, _appMeta);
+    /**
+     * @dev Sends a ping message.
+     * @param _pingData The message with the metadata of the application.
+     */
+    function sendPingMessage(PingData calldata _pingData) public {
+        require(_pingData.guardianIndex > 0, "Invalid guardian index");
+        require(_pingData.blockNumber > 0, "Invalid block number");
+        require(_pingData.stakingModuleIds.length > 0, "Invalid block number");
+
+        _validateAppData(_pingData.app);
+
+        emit MessagePing(MessageType.PING, msg.sender, _pingData);
     }
 
     /**
@@ -152,6 +174,8 @@ contract DSMDataBus {
             _depositData.signature.length > 0,
             "Signature must not be empty"
         );
+
+        _validateAppData(_depositData.app);
 
         emit MessageDeposit(MessageType.DEPOSIT, msg.sender, _depositData);
     }
@@ -175,6 +199,8 @@ contract DSMDataBus {
             "Vetted keys must not be empty"
         );
 
+        _validateAppData(_unvetData.app);
+
         emit MessageUnvet(MessageType.UNVET, msg.sender, _unvetData);
     }
 
@@ -196,6 +222,8 @@ contract DSMDataBus {
             "Signature must not be empty"
         );
 
+        _validateAppData(_pauseV2Data.app);
+
         emit MessagePauseV2(MessageType.PAUSE, msg.sender, _pauseV2Data);
     }
 
@@ -210,6 +238,8 @@ contract DSMDataBus {
             _pauseV3Data.signature.length > 0,
             "Signature must not be empty"
         );
+
+        _validateAppData(_pauseV3Data.app);
 
         emit MessagePauseV3(MessageType.PAUSE, msg.sender, _pauseV3Data);
     }
