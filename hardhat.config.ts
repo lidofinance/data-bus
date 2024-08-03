@@ -1,24 +1,29 @@
 import { HardhatUserConfig } from "hardhat/types";
 import { mochaRootHooks } from "./test/hooks";
 
+import dotenv from "dotenv";
 import "@nomicfoundation/hardhat-verify";
-import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
-import { secureAccountsPlugin } from "./lib";
-
+import { networkWithSecureAccount, secureAccountsPlugin } from "./lib";
+dotenv.config();
 secureAccountsPlugin(["gnosis", "chiado"]);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
   networks: {
-    gnosis: {
-      url: "https://rpc.gnosischain.com",
-    },
-    chiado: {
-      url: "https://rpc.chiadochain.net",
+    // gnosis: networkWithSecureAccount("gnosis", {
+    //   url: "https://rpc.gnosischain.com",
+    // }),
+    chiado: networkWithSecureAccount("chiado", {
+      url: "https://gnosis-chiado-rpc.publicnode.com",
       gasPrice: 1000000000,
-    },
+    }),
+    // chiado: {
+    //   url: "https://gnosis-chiado-rpc.publicnode.com",
+    //   gasPrice: 1000000000,
+    // },
   },
   etherscan: {
     customChains: [
@@ -26,9 +31,8 @@ const config: HardhatUserConfig = {
         network: "chiado",
         chainId: 10200,
         urls: {
-          //Blockscout
-          apiURL: "https://blockscout.com/gnosis/chiado/api",
-          browserURL: "https://blockscout.com/gnosis/chiado",
+          apiURL: "https://gnosis-chiado.blockscout.com/api",
+          browserURL: "https://gnosis-chiado.blockscout.com",
         },
       },
       {
@@ -48,8 +52,8 @@ const config: HardhatUserConfig = {
     apiKey: {
       //4) Insert your Gnosisscan API key
       //blockscout explorer verification does not require keys
-      chiado: "your key",
-      gnosis: "your key",
+      chiado: process.env.CHIADO_BLOCKSCOUT as string,
+      // gnosis: "your key",
     },
   },
   mocha: {
