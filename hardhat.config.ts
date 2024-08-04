@@ -14,7 +14,9 @@ const envConfig = parseContractEnvConfig(process.env);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
+  defaultNetwork: 'local',
   networks: {
+    
     // gnosis: networkWithSecureAccount("gnosis", {
     //   url: "https://rpc.gnosischain.com",
     // }),

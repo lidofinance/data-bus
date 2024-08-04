@@ -16,6 +16,8 @@ const generateRange = (
 
 async function main() {
   const envConfig = parseMonitoringConfig(process.env);
+  console.log("Started with config:", envConfig);
+
   const provider = new JsonRpcProvider(envConfig.NODE_HOST);
 
   const alreadyIndexed: Record<string, boolean> = {};
@@ -30,7 +32,11 @@ async function main() {
       startBlock!.number
     );
 
-    console.log("Block range has been processed:", startBlockNumber, envBlockNumber);
+    console.log(
+      "Block range has been processed:",
+      startBlockNumber,
+      envBlockNumber
+    );
 
     // TODO: rewrite to getLogs with multi topics (decrease requests to eth node)
     const events = (
@@ -64,7 +70,9 @@ async function main() {
           return events;
         })
       )
-    ).flat().filter(d => !!d);
+    )
+      .flat()
+      .filter((d) => !!d);
 
     if (!events.length) return;
 

@@ -7,7 +7,8 @@
     "abi": "hardhat run scripts/abi.ts",
     "local-node": "hardhat run scripts/local-node.ts",
     "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account",
-    "monitoring": "ts-node monitoring/index.ts"
+    "monitoring": "ts-node monitoring/index.ts",
+    "stand:default": "hardhat run scripts/run-testing-stand.ts"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {
