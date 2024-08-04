@@ -3,8 +3,7 @@ import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { DataBus, DataBus__factory } from "typechain-types";
 import { getReceipt } from "./lib";
-import { parseEvents, sendMessage } from "../lib/data-bus-sdk";
-import { MessageType } from "../lib/data-bus-dsm-types";
+import { parseEvents, sendMessage, MessageType } from "../lib/sdk";
 
 describe("DataBus", function () {
   let DataBus: DataBus__factory;
