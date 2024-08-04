@@ -1,39 +1,45 @@
-import { Block, BytesLike } from "ethers";
+import { Block } from "ethers";
 import { ethers } from "hardhat";
 import { randomInt, sleep } from "./utils";
-import { DSMDataBus, DSMDataBus__factory } from "../../typechain-types";
+import { DataBus__factory } from "../../typechain-types";
+import {
+  UnvetData,
+  PauseV2Data,
+  PauseV3Data,
+  PingData,
+  DepositData,
+  MessageType,
+  sendMessage,
+} from "../../lib/sdk";
 
 const getVariants = (block: Block) => {
   const messages = [
     {
-      name: "sendPingMessage",
-      data: (): DSMDataBus.PingDataStruct => ({
+      type: MessageType.Ping,
+      data: (): PingData => ({
         blockNumber: block.number,
-        guardianIndex: randomInt(1, 10),
         stakingModuleIds: [randomInt(1, 5), randomInt(6, 10)],
         app: { version: "1.0", name: "AppName" },
       }),
     },
     {
-      name: "sendDepositMessage",
-      data: (): DSMDataBus.DepositDataStruct => ({
-        guardianIndex: randomInt(1, 10),
+      type: MessageType.Deposit,
+      data: (): DepositData => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
         blockNumber: block.number,
-        blockHash: block.hash as BytesLike,
+        blockHash: block.hash as string,
         signature: "0x" + "0".repeat(130),
         stakingModuleId: randomInt(1, 5),
         app: { version: "1.0", name: "AppName" },
       }),
     },
     {
-      name: "sendUnvetMessage",
-      data: (): DSMDataBus.UnvetDataStruct => ({
-        guardianIndex: randomInt(1, 10),
+      type: MessageType.Unvet,
+      data: (): UnvetData => ({
         nonce: randomInt(1, 100),
         blockNumber: block.number,
-        blockHash: block.hash as BytesLike,
+        blockHash: block.hash as string,
         stakingModuleId: randomInt(1, 5),
         signature: "0x" + "0".repeat(130),
         operatorIds: "operator" + randomInt(1, 10).toString(),
@@ -42,22 +48,20 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      name: "sendPauseMessageV2",
-      data: (): DSMDataBus.PauseV2DataStruct => ({
-        guardianIndex: randomInt(1, 10),
+      type: MessageType.PauseV2,
+      data: (): PauseV2Data => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
         blockNumber: block.number,
-        blockHash: block.hash as BytesLike,
+        blockHash: block.hash as string,
         signature: "0x" + "0".repeat(130),
         stakingModuleId: randomInt(1, 5),
         app: { version: "1.0", name: "AppName" },
       }),
     },
     {
-      name: "sendPauseMessageV3",
-      data: (): DSMDataBus.PauseV3DataStruct => ({
-        guardianIndex: randomInt(1, 10),
+      type: MessageType.PauseV3,
+      data: (): PauseV3Data => ({
         blockNumber: block.number,
         signature: "0x" + "0".repeat(130),
         app: { version: "1.0", name: "AppName" },
@@ -71,15 +75,16 @@ const getVariants = (block: Block) => {
 const sendRandomMessage = async (dataBus: any, block: Block) => {
   const variants = getVariants(block);
   const message = variants[randomInt(0, variants.length - 1)];
-  console.log(`Sending ${message.name} with random data.`);
-  const tx = await dataBus[message.name](message.data());
+  console.log(`Sending ${message.type} with random data.`);
+  const tx = await sendMessage(dataBus, 1, { messageType: message.type, data: message.data() });
+  // const tx = await dataBus[message.name](message.data());
   await tx.wait();
-  console.log(`${message.name} executed.`);
+  console.log(`${message.type} executed.`);
 };
 
 export const spammer = async (dataBusAddress: string) => {
   const [signer] = await ethers.getSigners();
-  const dataBus = DSMDataBus__factory.connect(dataBusAddress, signer);
+  const dataBus = DataBus__factory.connect(dataBusAddress, signer);
   const block = (await signer.provider.getBlock("latest")) as Block;
 
   while (true) {
