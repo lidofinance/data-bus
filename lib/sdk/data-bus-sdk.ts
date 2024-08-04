@@ -49,11 +49,15 @@ export async function sendMessage(
   return tx;
 }
 
-export async function parseEvents(contract: DataBus): Promise<any[]> {
+export async function parseEvents(
+  contract: DataBus,
+  blockFrom = 0,
+  blockTo: number | string = "latest"
+): Promise<any[]> {
   const events = await contract.queryFilter(
     contract.filters.Message(),
-    0,
-    "latest"
+    blockFrom,
+    blockTo
   );
   const results: any[] = [];
 
@@ -64,23 +68,38 @@ export async function parseEvents(contract: DataBus): Promise<any[]> {
     switch (Number(messageType)) {
       case MessageType.Deposit:
         decodedData = encoder.decode([ABI_DEPOSIT_DATA], data);
-        results.push({ event: MessageType.Deposit, data: formatMessageDeposit(decodedData[0]) });
+        results.push({
+          event: MessageType.Deposit,
+          data: formatMessageDeposit(decodedData[0]),
+        });
         break;
       case MessageType.PauseV2:
         decodedData = encoder.decode([ABI_PAUSE_V2_DATA], data);
-        results.push({ event: MessageType.PauseV2, data: formatMessagePauseV2(decodedData[0]) });
+        results.push({
+          event: MessageType.PauseV2,
+          data: formatMessagePauseV2(decodedData[0]),
+        });
         break;
       case MessageType.PauseV3:
         decodedData = encoder.decode([ABI_PAUSE_V3_DATA], data);
-        results.push({ event: MessageType.PauseV3, data: formatMessagePauseV3(decodedData[0]) });
+        results.push({
+          event: MessageType.PauseV3,
+          data: formatMessagePauseV3(decodedData[0]),
+        });
         break;
       case MessageType.Unvet:
         decodedData = encoder.decode([ABI_UNVET_DATA], data);
-        results.push({ event: MessageType.Unvet, data: formatMessageUnvet(decodedData[0]) });
+        results.push({
+          event: MessageType.Unvet,
+          data: formatMessageUnvet(decodedData[0]),
+        });
         break;
       case MessageType.Ping:
         decodedData = encoder.decode([ABI_PING_DATA], data);
-        results.push({ event: MessageType.Ping, data: formatMessagePing(decodedData[0]) });
+        results.push({
+          event: MessageType.Ping,
+          data: formatMessagePing(decodedData[0]),
+        });
         break;
       default:
         console.error("Unknown MessageType:", Number(messageType));
