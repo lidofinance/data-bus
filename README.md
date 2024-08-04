@@ -5,6 +5,12 @@ The DSM data bus is a separate transport layer for communication between council
 > The project is currently under development
 
 ## Building and testing
+Create .env file
+```sh
+CHIADO_BLOCKSCOUT=<your key from https://gnosis-chiado.blockscout.com>
+NODE_HOST=http://127.0.0.1:8888
+```
+
 Install the dependencies
 ```sh
 yarn
