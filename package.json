@@ -5,7 +5,9 @@
     "test": "hardhat test",
     "deploy": "hardhat run scripts/deploy.ts",
     "abi": "hardhat run scripts/abi.ts",
-    "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account"
+    "local-node": "hardhat run scripts/local-node.ts",
+    "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account",
+    "monitoring": "ts-node monitoring/index.ts"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {
@@ -28,5 +30,8 @@
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
   }
 }
