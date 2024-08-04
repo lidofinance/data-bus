@@ -1,5 +1,8 @@
 # DSM data bus
-The DSM data bus is a separate transport layer for communication between council-daemon and depositor-bot.
+The DSM data bus is a separate transport layer for communication between council-daemon and depositor-bot. This works using a smart contract and any evm compatible network.
+
+> [!NOTE]
+> The project is currently under development
 
 ## Building and testing
 Install the dependencies
