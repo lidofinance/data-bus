@@ -4,7 +4,6 @@ export interface AppMetaData {
 }
 
 export interface DepositData {
-  guardianIndex: number;
   depositRoot: string;
   nonce: number;
   blockNumber: number;
@@ -15,7 +14,6 @@ export interface DepositData {
 }
 
 export interface PauseV2Data {
-  guardianIndex: number;
   depositRoot: string;
   nonce: number;
   blockNumber: number;
@@ -26,14 +24,12 @@ export interface PauseV2Data {
 }
 
 export interface PauseV3Data {
-  guardianIndex: number;
   blockNumber: number;
   signature: string;
   app: AppMetaData;
 }
 
 export interface UnvetData {
-  guardianIndex: number;
   nonce: number;
   blockNumber: number;
   blockHash: string;
@@ -46,15 +42,15 @@ export interface UnvetData {
 
 export interface PingData {
   blockNumber: number;
-  guardianIndex: number;
+
   stakingModuleIds: number[];
   app: AppMetaData;
 }
 
 export enum MessageType {
-    Deposit = 1,
-    PauseV2 = 2,
-    PauseV3 = 3,
-    Unvet = 4,
-    Ping = 5,
-  }
+  Deposit = 1,
+  PauseV2 = 2,
+  PauseV3 = 3,
+  Unvet = 4,
+  Ping = 5,
+}

@@ -20,7 +20,6 @@ describe("DataBus", function () {
   it("should measure gas for sendPingMessage", async function () {
     const data = {
       blockNumber: 100n,
-      guardianIndex: 1n,
       stakingModuleIds: [1n, 2n],
       app: { version: "1.0", name: "AppName" },
     };
@@ -43,7 +42,6 @@ describe("DataBus", function () {
 
   it("should measure gas for sendDepositMessage", async function () {
     const data = {
-      guardianIndex: 1,
       depositRoot: "0x" + "0".repeat(64),
       nonce: 1,
       blockNumber: 100,
@@ -69,7 +67,6 @@ describe("DataBus", function () {
 
   it("should measure gas for sendUnvetMessage", async function () {
     const data = {
-      guardianIndex: 1,
       nonce: 1,
       blockNumber: 100,
       blockHash: encodeBytes32String("hash"),
@@ -96,7 +93,6 @@ describe("DataBus", function () {
 
   it("should measure gas for sendPauseMessageV2", async function () {
     const data = {
-      guardianIndex: 1,
       depositRoot: "0x" + "0".repeat(64),
       nonce: 1,
       blockNumber: 100,
@@ -122,7 +118,6 @@ describe("DataBus", function () {
 
   it("should measure gas for sendPauseMessageV3", async function () {
     const data = {
-      guardianIndex: 1,
       blockNumber: 100,
       signature: "0x" + "0".repeat(130),
       app: { version: "1.0", name: "AppName" },
