@@ -62,15 +62,18 @@ export async function parseEvents(
   const results: any[] = [];
 
   for (const event of events) {
-    const { messageType, data } = event.args;
+    const { messageType, data, sender } = event.args;
     let decodedData;
-
+    // TODO: log index
+    const idempotentKey = `${Number(messageType)}-${event.transactionHash}-${sender}`;
     switch (Number(messageType)) {
       case MessageType.Deposit:
         decodedData = encoder.decode([ABI_DEPOSIT_DATA], data);
         results.push({
           event: MessageType.Deposit,
           data: formatMessageDeposit(decodedData[0]),
+          idempotentKey,
+          sender,
         });
         break;
       case MessageType.PauseV2:
@@ -78,6 +81,8 @@ export async function parseEvents(
         results.push({
           event: MessageType.PauseV2,
           data: formatMessagePauseV2(decodedData[0]),
+          idempotentKey,
+          sender,
         });
         break;
       case MessageType.PauseV3:
@@ -85,6 +90,8 @@ export async function parseEvents(
         results.push({
           event: MessageType.PauseV3,
           data: formatMessagePauseV3(decodedData[0]),
+          idempotentKey,
+          sender,
         });
         break;
       case MessageType.Unvet:
@@ -92,6 +99,8 @@ export async function parseEvents(
         results.push({
           event: MessageType.Unvet,
           data: formatMessageUnvet(decodedData[0]),
+          idempotentKey,
+          sender,
         });
         break;
       case MessageType.Ping:
@@ -99,6 +108,8 @@ export async function parseEvents(
         results.push({
           event: MessageType.Ping,
           data: formatMessagePing(decodedData[0]),
+          idempotentKey,
+          sender,
         });
         break;
       default:

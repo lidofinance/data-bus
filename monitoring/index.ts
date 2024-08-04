@@ -38,11 +38,17 @@ async function main() {
       envBlockNumber
     );
 
-    const events = await parseEvents(contract, startBlockNumber, envBlockNumber);
+    const events = await parseEvents(
+      contract,
+      startBlockNumber,
+      envBlockNumber
+    );
 
-    if (!events.length) return;
-
-    console.log(events);
+    events.map((event) => {
+      if (alreadyIndexed[event.idempotentKey]) return;
+      alreadyIndexed[event.idempotentKey] = true;
+      console.log(event);
+    });
   }, 5000);
 }
 

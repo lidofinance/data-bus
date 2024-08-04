@@ -35,8 +35,9 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(33445);
 
-    const eventData = (await parseEvents(dataBus))[0].data;
-    expect(eventData).to.deep.equal(data);
+    const event = (await parseEvents(dataBus))[0];
+    expect(event.data).to.deep.equal(data);
+    expect(event.sender).to.deep.equal(await owner.getAddress());
   });
 
   it("should measure gas for sendDepositMessage", async function () {
@@ -60,8 +61,9 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(36775);
 
-    const eventData = (await parseEvents(dataBus))[0].data;
-    expect(eventData).to.deep.equal(data);
+    const event = (await parseEvents(dataBus))[0];
+    expect(event.data).to.deep.equal(data);
+    expect(event.sender).to.deep.equal(await owner.getAddress());
   });
 
   it("should measure gas for sendUnvetMessage", async function () {
@@ -86,8 +88,9 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(40039);
 
-    const eventData = (await parseEvents(dataBus))[0].data;
-    expect(eventData).to.deep.equal(data);
+    const event = (await parseEvents(dataBus))[0];
+    expect(event.data).to.deep.equal(data);
+    expect(event.sender).to.deep.equal(await owner.getAddress());
   });
 
   it("should measure gas for sendPauseMessageV2", async function () {
@@ -111,8 +114,9 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(36763);
 
-    const eventData = (await parseEvents(dataBus))[0].data;
-    expect(eventData).to.deep.equal(data);
+    const event = (await parseEvents(dataBus))[0];
+    expect(event.data).to.deep.equal(data);
+    expect(event.sender).to.deep.equal(await owner.getAddress());
   });
 
   it("should measure gas for sendPauseMessageV3", async function () {
@@ -132,7 +136,8 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(33798);
 
-    const eventData = (await parseEvents(dataBus))[0].data;
-    expect(eventData).to.deep.equal(data);
+    const event = (await parseEvents(dataBus))[0];
+    expect(event.data).to.deep.equal(data);
+    expect(event.sender).to.deep.equal(await owner.getAddress());
   });
 });
