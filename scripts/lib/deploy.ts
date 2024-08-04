@@ -23,7 +23,7 @@ export const deploy = async () => {
 
   console.log("Deploying contracts with the account:", deployer.address);
 
-  const DataBus = await ethers.getContractFactory("DSMDataBus");
+  const DataBus = await ethers.getContractFactory("DataBus");
   const contract = await DataBus.deploy();
   const tx = contract.deploymentTransaction();
   await tx?.wait();
