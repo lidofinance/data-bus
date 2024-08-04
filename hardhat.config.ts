@@ -14,23 +14,19 @@ const envConfig = parseContractEnvConfig(process.env);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-  defaultNetwork: 'local',
+//   defaultNetwork: 'local',
   networks: {
     
     // gnosis: networkWithSecureAccount("gnosis", {
     //   url: "https://rpc.gnosischain.com",
     // }),
-    local: {
-      url: envConfig.NODE_HOST,
-    },
+    // local: {
+    //   url: envConfig.NODE_HOST,
+    // },
     chiado: {
       url: "https://gnosis-chiado-rpc.publicnode.com",
       gasPrice: 1000000000,
     },
-    // chiado: {
-    //   url: "https://gnosis-chiado-rpc.publicnode.com",
-    //   gasPrice: 1000000000,
-    // },
   },
   etherscan: {
     customChains: [
