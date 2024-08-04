@@ -1,4 +1,5 @@
-import ethers, { Block, BytesLike, JsonRpcProvider, Wallet } from "ethers";
+import { Block, BytesLike } from "ethers";
+import { ethers } from "hardhat";
 import { randomInt, sleep } from "./utils";
 import { DSMDataBus, DSMDataBus__factory } from "../../typechain-types";
 
@@ -75,15 +76,12 @@ const sendRandomMessage = async (dataBus: any, block: Block) => {
   await tx.wait();
   console.log(`${message.name} executed.`);
 };
-// Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (10000 ETH)
-// Private Key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-export const spammer = async (dataBusAddress: string, rpcUrl: string) => {
-  const provider = new JsonRpcProvider(rpcUrl);
-  const privateKey =
-    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-  const wallet = new Wallet(privateKey, provider);
-  const dataBus = DSMDataBus__factory.connect(dataBusAddress, wallet);
-  const block = (await provider.getBlock("latest")) as Block;
+
+export const spammer = async (dataBusAddress: string) => {
+  const [signer] = await ethers.getSigners();
+  const dataBus = DSMDataBus__factory.connect(dataBusAddress, signer);
+  const block = (await signer.provider.getBlock("latest")) as Block;
+
   while (true) {
     await sendRandomMessage(dataBus, block);
     await sleep(randomInt(1000, 2000));

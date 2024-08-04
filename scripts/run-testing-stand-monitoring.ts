@@ -1,7 +1,6 @@
 import { deploy } from "./lib/deploy";
 import { runLocalNode } from "./lib/local-node";
 import { runProcess } from "./lib/run-process";
-import { spammer } from "./lib/spammer";
 import { sleep } from "./lib/utils";
 
 async function main() {
@@ -10,8 +9,6 @@ async function main() {
 
   const contract = await deploy();
   const dataBusAddress = await contract.getAddress();
-
-  spammer(dataBusAddress).catch(console.error);
 
   await runProcess("npx", ["ts-node", "monitoring/index.ts"], {
     DATA_BUS_ADDRESS: dataBusAddress,
