@@ -1,8 +1,8 @@
-import { DSMDataBus__factory } from "../typechain-types";
+import { DataBus__factory } from "../typechain-types";
 
 import { parseMonitoringConfig } from "../lib/config";
 import { JsonRpcProvider } from "ethers";
-import { allEvents, formatters } from "./event-parser";
+import { parseEvents } from "../lib/sdk";
 
 const MONITORING_BLOCK_OVERLAP = 200;
 
@@ -22,7 +22,7 @@ async function main() {
 
   const alreadyIndexed: Record<string, boolean> = {};
 
-  const contract = DSMDataBus__factory.connect(
+  const contract = DataBus__factory.connect(
     envConfig.DATA_BUS_ADDRESS,
     provider
   );
@@ -38,45 +38,18 @@ async function main() {
       envBlockNumber
     );
 
-    // TODO: rewrite to getLogs with multi topics (decrease requests to eth node)
-    const events = (
-      await Promise.all(
-        allEvents.map(async (filterName) => {
-          const filter = contract.filters[filterName]();
-          const rawEvents = await contract.queryFilter(
-            filter,
-            startBlockNumber,
-            envBlockNumber
-          );
-          const formatter = formatters[filterName];
-          const events = rawEvents.map((ev) => {
-            // TODO: check logIndex (it can be error in typechain or ethers6 have different api)
-            const { index, transactionHash, transactionIndex } = ev;
-            const formattedData = formatter(ev.args as any);
-            const idempotentKey = `${filterName}-${transactionHash}-${formattedData.guardianIndex}`;
+    const events = await parseEvents(
+      contract,
+      provider,
+      startBlockNumber,
+      envBlockNumber
+    );
 
-            if (alreadyIndexed[idempotentKey]) return;
-            alreadyIndexed[idempotentKey] = true;
-
-            return {
-              ...formattedData,
-              index,
-              transactionHash,
-              transactionIndex,
-              idempotentKey,
-              type: filterName,
-            };
-          });
-          return events;
-        })
-      )
-    )
-      .flat()
-      .filter((d) => !!d);
-
-    if (!events.length) return;
-
-    console.log(events);
+    events.map((event) => {
+      if (alreadyIndexed[event.idempotentKey]) return;
+      alreadyIndexed[event.idempotentKey] = true;
+      console.log(event);
+    });
   }, 5000);
 }
 
