@@ -1,7 +1,7 @@
 import fs from "fs";
 
-const artifactPath = "artifacts/contracts/DSMDataBus.sol/DSMDataBus.json";
-const abiPath = "abi/DSMDataBus.json";
+const artifactPath = "artifacts/contracts/DataBus.sol/DataBus.json";
+const abiPath = "abi/DataBus.json";
 
 async function main() {
   const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf-8"));

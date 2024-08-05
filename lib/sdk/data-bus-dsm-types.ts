@@ -46,11 +46,3 @@ export interface PingData {
   stakingModuleIds: number[];
   app: AppMetaData;
 }
-
-export enum MessageType {
-  Deposit = 1,
-  PauseV2 = 2,
-  PauseV3 = 3,
-  Unvet = 4,
-  Ping = 5,
-}

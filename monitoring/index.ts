@@ -40,6 +40,7 @@ async function main() {
 
     const events = await parseEvents(
       contract,
+      provider,
       startBlockNumber,
       envBlockNumber
     );

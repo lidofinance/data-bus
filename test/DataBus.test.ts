@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { encodeBytes32String, Signer } from "ethers";
+import { encodeBytes32String, Provider, Signer } from "ethers";
 import { DataBus, DataBus__factory } from "typechain-types";
 import { getReceipt } from "./lib";
 import { parseEvents, sendMessage, MessageType } from "../lib/sdk";
@@ -23,7 +23,7 @@ describe("DataBus", function () {
       app: { version: "1.0", name: "AppName" },
     };
 
-    const tx = await sendMessage(dataBus, 1, {
+    const tx = await sendMessage(dataBus, {
       messageType: MessageType.Ping,
       data,
     });
@@ -33,9 +33,9 @@ describe("DataBus", function () {
 
     console.log("Gas used for sendPingMessage:", receipt.gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(33445);
+    expect(gasUsed).to.be.lessThanOrEqual(29847);
 
-    const event = (await parseEvents(dataBus))[0];
+    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
     expect(event.data).to.deep.equal(data);
     expect(event.sender).to.deep.equal(await owner.getAddress());
   });
@@ -50,7 +50,7 @@ describe("DataBus", function () {
       stakingModuleId: 1,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, 1, {
+    const tx = await sendMessage(dataBus, {
       messageType: MessageType.Deposit,
       data,
     });
@@ -59,9 +59,9 @@ describe("DataBus", function () {
 
     console.log("Gas used for sendDepositMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(36775);
+    expect(gasUsed).to.be.lessThanOrEqual(31858);
 
-    const event = (await parseEvents(dataBus))[0];
+    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
     expect(event.data).to.deep.equal(data);
     expect(event.sender).to.deep.equal(await owner.getAddress());
   });
@@ -77,7 +77,7 @@ describe("DataBus", function () {
       vettedKeysByOperator: "keys",
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, 1, {
+    const tx = await sendMessage(dataBus, {
       messageType: MessageType.Unvet,
       data,
     });
@@ -86,9 +86,9 @@ describe("DataBus", function () {
 
     console.log("Gas used for sendUnvetMessage:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(40039);
+    expect(gasUsed).to.be.lessThanOrEqual(34024);
 
-    const event = (await parseEvents(dataBus))[0];
+    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
     expect(event.data).to.deep.equal(data);
     expect(event.sender).to.deep.equal(await owner.getAddress());
   });
@@ -103,7 +103,7 @@ describe("DataBus", function () {
       stakingModuleId: 1,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, 1, {
+    const tx = await sendMessage(dataBus, {
       messageType: MessageType.PauseV2,
       data,
     });
@@ -112,9 +112,9 @@ describe("DataBus", function () {
 
     console.log("Gas used for sendPauseMessageV2:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(36763);
+    expect(gasUsed).to.be.lessThanOrEqual(31858);
 
-    const event = (await parseEvents(dataBus))[0];
+    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
     expect(event.data).to.deep.equal(data);
     expect(event.sender).to.deep.equal(await owner.getAddress());
   });
@@ -125,7 +125,7 @@ describe("DataBus", function () {
       signature: "0x" + "0".repeat(130),
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, 1, {
+    const tx = await sendMessage(dataBus, {
       messageType: MessageType.PauseV3,
       data,
     });
@@ -134,9 +134,9 @@ describe("DataBus", function () {
 
     console.log("Gas used for sendPauseMessageV3:", gasUsed.toString());
 
-    expect(gasUsed).to.be.lessThanOrEqual(33798);
+    expect(gasUsed).to.be.lessThanOrEqual(30213);
 
-    const event = (await parseEvents(dataBus))[0];
+    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
     expect(event.data).to.deep.equal(data);
     expect(event.sender).to.deep.equal(await owner.getAddress());
   });

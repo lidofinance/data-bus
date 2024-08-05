@@ -1,6 +1,5 @@
-import { AbiCoder } from "ethers";
+import { AbiCoder, Provider } from "ethers";
 import { DataBus } from "typechain-types";
-import { MessageType } from "./data-bus-dsm-types";
 import {
   ABI_DEPOSIT_DATA,
   ABI_PAUSE_V2_DATA,
@@ -13,12 +12,13 @@ import {
   formatMessagePing,
   formatMessageUnvet,
 } from "./data-bus-parser";
+import { ENCODING_VERSION, EventIds, MessageType } from "./data-bus.constants";
+import { encodeEventId } from "./event-id";
 
 export const encoder = AbiCoder.defaultAbiCoder();
 
 export async function sendMessage(
   dataBus: DataBus,
-  encodingVersion: number,
   message: { messageType: MessageType; data: any }
 ) {
   const { messageType, data } = message;
@@ -44,30 +44,45 @@ export async function sendMessage(
       throw new Error("Invalid message type");
   }
 
-  const tx = await dataBus.sendMessage(messageType, encodingVersion, dataBytes);
+  const tx = await dataBus.sendMessage(
+    encodeEventId(messageType, ENCODING_VERSION),
+    dataBytes
+  );
   await tx.wait();
   return tx;
 }
 
 export async function parseEvents(
   contract: DataBus,
+  provider: Provider,
   blockFrom = 0,
   blockTo: number | string = "latest"
 ): Promise<any[]> {
-  const events = await contract.queryFilter(
-    contract.filters.Message(),
-    blockFrom,
-    blockTo
-  );
+  const filter = {
+    address: await contract.getAddress(),
+    topics: [Object.values(EventIds)],
+    fromBlock: blockFrom,
+    toBlock: blockTo,
+  };
+
+  if (!contract.runner) {
+    throw new Error(`contract.runner is not provided`);
+  }
+  const logs = await provider.getLogs(filter);
+
   const results: any[] = [];
 
-  for (const event of events) {
-    const { messageType, data, sender } = event.args;
+  for (const log of logs) {
+    const data = encoder.decode(["bytes"], log.data)[0];
+    if (!data) continue;
+    const { topics } = log;
+    const [eventId, encodedSnder] = topics;
+    const sender = encoder.decode(["address"], encodedSnder)[0];
     let decodedData;
     // TODO: log index
-    const idempotentKey = `${Number(messageType)}-${event.transactionHash}-${sender}`;
-    switch (Number(messageType)) {
-      case MessageType.Deposit:
+    const idempotentKey = `${eventId}-${log.transactionHash}-${sender}`;
+    switch (eventId) {
+      case EventIds.Deposit:
         decodedData = encoder.decode([ABI_DEPOSIT_DATA], data);
         results.push({
           event: MessageType.Deposit,
@@ -76,7 +91,7 @@ export async function parseEvents(
           sender,
         });
         break;
-      case MessageType.PauseV2:
+      case EventIds.PauseV2:
         decodedData = encoder.decode([ABI_PAUSE_V2_DATA], data);
         results.push({
           event: MessageType.PauseV2,
@@ -85,7 +100,7 @@ export async function parseEvents(
           sender,
         });
         break;
-      case MessageType.PauseV3:
+      case EventIds.PauseV3:
         decodedData = encoder.decode([ABI_PAUSE_V3_DATA], data);
         results.push({
           event: MessageType.PauseV3,
@@ -94,7 +109,7 @@ export async function parseEvents(
           sender,
         });
         break;
-      case MessageType.Unvet:
+      case EventIds.Unvet:
         decodedData = encoder.decode([ABI_UNVET_DATA], data);
         results.push({
           event: MessageType.Unvet,
@@ -103,7 +118,7 @@ export async function parseEvents(
           sender,
         });
         break;
-      case MessageType.Ping:
+      case EventIds.Ping:
         decodedData = encoder.decode([ABI_PING_DATA], data);
         results.push({
           event: MessageType.Ping,
@@ -113,7 +128,7 @@ export async function parseEvents(
         });
         break;
       default:
-        console.error("Unknown MessageType:", Number(messageType));
+        console.error("Unknown MessageType:", eventId);
     }
   }
 

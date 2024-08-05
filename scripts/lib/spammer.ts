@@ -76,7 +76,10 @@ const sendRandomMessage = async (dataBus: any, block: Block) => {
   const variants = getVariants(block);
   const message = variants[randomInt(0, variants.length - 1)];
   console.log(`Sending ${message.type} with random data.`);
-  const tx = await sendMessage(dataBus, 1, { messageType: message.type, data: message.data() });
+  const tx = await sendMessage(dataBus, {
+    messageType: message.type,
+    data: message.data(),
+  });
   // const tx = await dataBus[message.name](message.data());
   await tx.wait();
   console.log(`${message.type} executed.`);

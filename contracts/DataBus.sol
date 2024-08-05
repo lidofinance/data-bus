@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 contract DataBus {
     event Message(
-        uint256 indexed messageType,
-        uint256 indexed encodingVersion,
+        bytes32 indexed eventId,
         address indexed sender,
         bytes data
-    );
+    ) anonymous;
 
-    function sendMessage(uint256 _messageType, uint256 _encodingVersion, bytes memory _data) public {
-        emit Message(_messageType, _encodingVersion, msg.sender, _data);
+    function sendMessage(bytes32 _eventId, bytes calldata _data) public {
+        emit Message(_eventId, msg.sender, _data);
     }
 }
