@@ -1,19 +1,29 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { encodeBytes32String, Provider, Signer } from "ethers";
-import { DataBus, DataBus__factory } from "typechain-types";
+import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
-import { parseEvents, sendMessage, MessageType } from "../lib/sdk";
+import { DataBusSDK } from "../lib/sdk/sdk";
 
 describe("DataBus", function () {
-  let DataBus: DataBus__factory;
-  let dataBus: DataBus;
   let owner: Signer;
+  let sdk: DataBusSDK;
 
   beforeEach(async function () {
-    DataBus = await ethers.getContractFactory("DataBus");
+    const DataBus = await ethers.getContractFactory("DataBus");
     [owner] = await ethers.getSigners();
-    dataBus = await DataBus.connect(owner).deploy();
+    const dataBus = await DataBus.connect(owner).deploy();
+
+    sdk = new DataBusSDK(
+      await dataBus.getAddress(),
+      [
+        "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+        "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+        "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
+        "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
+        "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
+      ],
+      owner
+    );
   });
 
   it("should measure gas for sendPingMessage", async function () {
@@ -23,10 +33,7 @@ describe("DataBus", function () {
       app: { version: "1.0", name: "AppName" },
     };
 
-    const tx = await sendMessage(dataBus, {
-      messageType: MessageType.Ping,
-      data,
-    });
+    const tx = await sdk.sendMessage("MessagePing", data);
 
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
@@ -35,9 +42,12 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(29847);
 
-    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
+    const [event] = (await sdk.get("MessagePing")) as any;
+
     expect(event.data).to.deep.equal(data);
-    expect(event.sender).to.deep.equal(await owner.getAddress());
+    expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
+
+    expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 
   it("should measure gas for sendDepositMessage", async function () {
@@ -50,10 +60,7 @@ describe("DataBus", function () {
       stakingModuleId: 1,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, {
-      messageType: MessageType.Deposit,
-      data,
-    });
+    const tx = await sdk.sendMessage("MessageDeposit", data);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -61,9 +68,12 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(31858);
 
-    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
+    const [event] = (await sdk.get("MessageDeposit")) as any;
+
     expect(event.data).to.deep.equal(data);
-    expect(event.sender).to.deep.equal(await owner.getAddress());
+    expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
+
+    expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 
   it("should measure gas for sendUnvetMessage", async function () {
@@ -77,10 +87,7 @@ describe("DataBus", function () {
       vettedKeysByOperator: "keys",
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, {
-      messageType: MessageType.Unvet,
-      data,
-    });
+    const tx = await sdk.sendMessage("MessageUnvet", data);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -88,9 +95,12 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(34024);
 
-    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
+    const [event] = (await sdk.get("MessageUnvet")) as any;
+
     expect(event.data).to.deep.equal(data);
-    expect(event.sender).to.deep.equal(await owner.getAddress());
+    expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
+
+    expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 
   it("should measure gas for sendPauseMessageV2", async function () {
@@ -103,10 +113,7 @@ describe("DataBus", function () {
       stakingModuleId: 1,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, {
-      messageType: MessageType.PauseV2,
-      data,
-    });
+    const tx = await sdk.sendMessage("MessagePauseV2", data);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -114,9 +121,12 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(31858);
 
-    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
+    const [event] = (await sdk.get("MessagePauseV2")) as any;
+
     expect(event.data).to.deep.equal(data);
-    expect(event.sender).to.deep.equal(await owner.getAddress());
+    expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
+
+    expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 
   it("should measure gas for sendPauseMessageV3", async function () {
@@ -125,10 +135,7 @@ describe("DataBus", function () {
       signature: "0x" + "0".repeat(130),
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sendMessage(dataBus, {
-      messageType: MessageType.PauseV3,
-      data,
-    });
+    const tx = await sdk.sendMessage("MessagePauseV3", data);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -136,8 +143,11 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(30213);
 
-    const event = (await parseEvents(dataBus, owner.provider as Provider))[0];
+    const [event] = (await sdk.get("MessagePauseV3")) as any;
+
     expect(event.data).to.deep.equal(data);
-    expect(event.sender).to.deep.equal(await owner.getAddress());
+    expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
+
+    expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 });

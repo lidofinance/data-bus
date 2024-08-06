@@ -1,4 +1,4 @@
-import { AbiCoder, Provider } from "ethers";
+import { AbiCoder, Provider, id } from "ethers";
 import { DataBus } from "typechain-types";
 import {
   ABI_DEPOSIT_DATA,
@@ -60,7 +60,8 @@ export async function parseEvents(
 ): Promise<any[]> {
   const filter = {
     address: await contract.getAddress(),
-    topics: [Object.values(EventIds)],
+    // topics: [Object.values(EventIds)],
+    topics: [id("Ping(address,bytes)")],
     fromBlock: blockFrom,
     toBlock: blockTo,
   };
