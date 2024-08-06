@@ -83,7 +83,7 @@ export class DataBusSDK {
       });
       if (!data) continue;
 
-      result.push({ ...data.args.toObject(true), name: data.name });
+      result.push({ ...data.args.toObject(true), name: data.name, txHash: log.transactionHash });
     }
 
     return result;

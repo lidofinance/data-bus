@@ -1,30 +1,21 @@
 import { Block } from "ethers";
 import { ethers } from "hardhat";
 import { randomInt, sleep } from "./utils";
-import { DataBus__factory } from "../../typechain-types";
-import {
-  UnvetData,
-  PauseV2Data,
-  PauseV3Data,
-  PingData,
-  DepositData,
-  MessageType,
-  sendMessage,
-} from "../../lib/sdk";
+import { DataBusSDK } from "../../lib/sdk/sdk";
 
 const getVariants = (block: Block) => {
   const messages = [
     {
-      type: MessageType.Ping,
-      data: (): PingData => ({
+      name: "MessagePing",
+      data: () => ({
         blockNumber: block.number,
         stakingModuleIds: [randomInt(1, 5), randomInt(6, 10)],
         app: { version: "1.0", name: "AppName" },
       }),
     },
     {
-      type: MessageType.Deposit,
-      data: (): DepositData => ({
+      name: "MessageDeposit",
+      data: () => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
         blockNumber: block.number,
@@ -35,8 +26,8 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      type: MessageType.Unvet,
-      data: (): UnvetData => ({
+      name: "MessageUnvet",
+      data: () => ({
         nonce: randomInt(1, 100),
         blockNumber: block.number,
         blockHash: block.hash as string,
@@ -48,8 +39,8 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      type: MessageType.PauseV2,
-      data: (): PauseV2Data => ({
+      name: "MessagePauseV2",
+      data: () => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
         blockNumber: block.number,
@@ -60,8 +51,8 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      type: MessageType.PauseV3,
-      data: (): PauseV3Data => ({
+      name: "MessagePauseV3",
+      data: () => ({
         blockNumber: block.number,
         signature: "0x" + "0".repeat(130),
         app: { version: "1.0", name: "AppName" },
@@ -72,26 +63,31 @@ const getVariants = (block: Block) => {
   return messages;
 };
 
-const sendRandomMessage = async (dataBus: any, block: Block) => {
+const sendRandomMessage = async (sdk: DataBusSDK, block: Block) => {
   const variants = getVariants(block);
   const message = variants[randomInt(0, variants.length - 1)];
-  console.log(`Sending ${message.type} with random data.`);
-  const tx = await sendMessage(dataBus, {
-    messageType: message.type,
-    data: message.data(),
-  });
-  // const tx = await dataBus[message.name](message.data());
+  console.log(`Sending ${message.name} with random data.`);
+  const tx = await sdk.sendMessage(message.name, message.data());
   await tx.wait();
-  console.log(`${message.type} executed.`);
+  console.log(`${message.name} executed.`);
 };
 
 export const spammer = async (dataBusAddress: string) => {
   const [signer] = await ethers.getSigners();
-  const dataBus = DataBus__factory.connect(dataBusAddress, signer);
   const block = (await signer.provider.getBlock("latest")) as Block;
-
+  const sdk = new DataBusSDK(
+    dataBusAddress,
+    [
+      "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+      "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+      "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
+      "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
+      "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
+    ],
+    signer
+  );
   while (true) {
-    await sendRandomMessage(dataBus, block);
+    await sendRandomMessage(sdk, block);
     await sleep(randomInt(1000, 2000));
   }
 };
