@@ -16,7 +16,7 @@ contract DataBus {
     ) anonymous;
 
     /// @notice Sends a message with the specified `eventId` and `data`
-    /// @dev Emits the `Message` event containing the message details; this method can be called by any sender to broadcast information
+    /// @dev Emits the `anonymous` event containing the message details; this method can be called by any sender to broadcast information
     /// @param _eventId The unique identifier for the message event
     /// @param _data The payload of the message to be sent
     function sendMessage(bytes32 _eventId, bytes calldata _data) public {
