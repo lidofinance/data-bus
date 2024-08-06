@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity 0.8.24;
 
 /// @title A contract for sending and logging messages as an abstract data bus
 /// @notice This smart contract serves as an abstract data bus, which can be utilized to facilitate lightweight, inter-service communication.
