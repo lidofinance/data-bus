@@ -51,14 +51,14 @@ describe("DataBus", function () {
   it("should measure gas for sendDepositMessage", async function () {
     const data = {
       depositRoot: "0x" + "0".repeat(64),
-      nonce: 1,
-      blockNumber: 100,
+      nonce: 1n,
+      blockNumber: 100n,
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
-      stakingModuleId: 1,
+      stakingModuleId: 1n,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sdk.sendMessage("MessageDeposit", data);
+    const tx = await sdk.sendMessage("MessageDeposit", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -85,7 +85,7 @@ describe("DataBus", function () {
       vettedKeysByOperator: "keys",
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sdk.sendMessage("MessageUnvet", data);
+    const tx = await sdk.sendMessage("MessageUnvet", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -111,7 +111,7 @@ describe("DataBus", function () {
       stakingModuleId: 1,
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sdk.sendMessage("MessagePauseV2", data);
+    const tx = await sdk.sendMessage("MessagePauseV2", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -133,7 +133,7 @@ describe("DataBus", function () {
       signature: "0x" + "0".repeat(130),
       app: { version: "1.0", name: "AppName" },
     };
-    const tx = await sdk.sendMessage("MessagePauseV3", data);
+    const tx = await sdk.sendMessage("MessagePauseV3", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
