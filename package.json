@@ -1,7 +1,12 @@
 {
   "name": "dsm-data-bus",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
   "scripts": {
-    "compile": "hardhat compile && yarn abi",
+    "compile": "hardhat compile && yarn abi && yarn workspaces foreach -A run build",
+    "pub:packages": "yarn workspaces foreach -A run pub",
     "test": "hardhat test",
     "deploy": "hardhat run scripts/deploy.ts",
     "abi": "hardhat run scripts/abi.ts",
@@ -25,7 +30,6 @@
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.0.0",
     "@types/readline-sync": "^1",
-    "abitype": "^1.0.6",
     "chai": "^4.1.1",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.2",
