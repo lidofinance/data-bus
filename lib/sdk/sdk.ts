@@ -1,4 +1,4 @@
-import { Abi, ParseAbi } from "abitype";
+import { ParseAbi } from "abitype";
 import { Contract, EventFragment, Interface, Provider, Signer } from "ethers";
 import { EventNames, EventsTypesResults, EventTypeResult } from "./types";
 

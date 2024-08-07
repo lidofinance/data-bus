@@ -3,13 +3,12 @@ import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
 import { DataBusSDK } from "../lib/sdk/sdk";
-import { ParseAbi } from "abitype";
 
 const abi = [
   "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
   "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
   "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
-  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
+  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data111)",
   "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
 ] as const;
 
@@ -43,7 +42,7 @@ describe("DataBus", function () {
 
     const [event] = await sdk.get("MessagePing");
 
-    expect(event.data).to.deep.equal(data);
+    expect(event.data111).to.deep.equal(data);
     expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
 
     expect(event).to.deep.equal((await sdk.getAll())[0]);
