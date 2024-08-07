@@ -1,14 +1,14 @@
-import { AbiParameterToPrimitiveType, ExtractAbiEvent, ParseAbi } from "abitype";
+import {
+  AbiParameterToPrimitiveType,
+  ExtractAbiEvent,
+  ParseAbi,
+} from "abitype";
 import { Contract, EventFragment, Interface, Provider, Signer } from "ethers";
 import { EventNames, EventsTypesResults, EventTypeResult } from "./types";
 
-export interface SDKParams {
-  dataBusAddress: string;
-  eventsAbi: string[];
-  signer: Signer;
-}
+export * from "abitype"
 
-export class DataBusSDK<signatures extends readonly string[]> {
+export class DataBusClient<signatures extends readonly string[]> {
   private dataBusAddress: string;
   private eventsInterface: Interface;
   private provider: Provider;
@@ -34,7 +34,9 @@ export class DataBusSDK<signatures extends readonly string[]> {
 
   async sendMessage<evName extends EventNames<ParseAbi<signatures>>>(
     eventName: evName,
-    data: AbiParameterToPrimitiveType<ExtractAbiEvent<ParseAbi<signatures>, evName>["inputs"][1]>
+    data: AbiParameterToPrimitiveType<
+      ExtractAbiEvent<ParseAbi<signatures>, evName>["inputs"][1]
+    >
   ) {
     const event = this.eventsFragments.find((ev) => ev.name === eventName);
     if (!event) {
@@ -61,7 +63,7 @@ export class DataBusSDK<signatures extends readonly string[]> {
       [event.topicHash],
       blockFrom,
       blockTo
-    ) as unknown as Promise<EventTypeResult<ParseAbi<signatures>, Name>[]>;
+    ) as Promise<EventTypeResult<ParseAbi<signatures>, Name>[]>;
   }
 
   async getAll(
@@ -72,7 +74,7 @@ export class DataBusSDK<signatures extends readonly string[]> {
       this.eventsFragments.map(({ topicHash }) => topicHash),
       blockFrom,
       blockTo
-    ) as unknown as Promise<EventsTypesResults<ParseAbi<signatures>>[]>;
+    ) as Promise<EventsTypesResults<ParseAbi<signatures>>[]>;
   }
 
   private async getByTopics(
@@ -86,7 +88,7 @@ export class DataBusSDK<signatures extends readonly string[]> {
       fromBlock: blockFrom,
       toBlock: blockTo,
     };
-    const result = [];
+    const result: unknown[] = [];
     const logs = await this.provider.getLogs(filter);
     for (const log of logs) {
       const data = this.eventsInterface.parseLog({
@@ -99,7 +101,7 @@ export class DataBusSDK<signatures extends readonly string[]> {
         ...data.args.toObject(true),
         name: data.name,
         txHash: log.transactionHash,
-      });
+      } as unknown);
     }
 
     return result;

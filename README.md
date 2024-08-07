@@ -98,4 +98,10 @@ yarn create-account --network chiado
 ```sh
 yarn deploy --network chiado
 ```
+4. (Optional) Run Testing Stand
 
+The testing stand consists of:
+- transaction spammer
+- console monitoring
+
+with the help of the testing stand you can visualize the principles of Data Bus operation

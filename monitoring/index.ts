@@ -1,6 +1,6 @@
 import { parseMonitoringConfig } from "../lib/config";
 import { JsonRpcProvider, Wallet } from "ethers";
-import { DataBusSDK } from "../lib/sdk/sdk";
+import { DataBusClient } from "../client";
 
 const MONITORING_BLOCK_OVERLAP = 200;
 
@@ -19,7 +19,7 @@ async function main() {
 
   const provider = new JsonRpcProvider(envConfig.NODE_HOST);
   const alreadyIndexed: Record<string, boolean> = {};
-  const sdk = new DataBusSDK(
+  const sdk = new DataBusClient(
     envConfig.DATA_BUS_ADDRESS,
     [
       "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
