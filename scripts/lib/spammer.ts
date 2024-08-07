@@ -3,6 +3,14 @@ import { ethers } from "hardhat";
 import { randomInt, sleep } from "./utils";
 import { DataBusSDK } from "../../lib/sdk/sdk";
 
+const abi = [
+  "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
+  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
+  "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
+] as const;
+
 const getVariants = (block: Block) => {
   const messages = [
     {
@@ -63,11 +71,14 @@ const getVariants = (block: Block) => {
   return messages;
 };
 
-const sendRandomMessage = async (sdk: DataBusSDK, block: Block) => {
+const sendRandomMessage = async <SDK extends DataBusSDK<typeof abi>>(
+  sdk: SDK,
+  block: Block
+) => {
   const variants = getVariants(block);
   const message = variants[randomInt(0, variants.length - 1)];
   console.log(`Sending ${message.name} with random data.`);
-  const tx = await sdk.sendMessage(message.name, message.data());
+  const tx = await sdk.sendMessage(message.name as any, message.data());
   await tx.wait();
   console.log(`${message.name} executed.`);
 };
@@ -77,15 +88,10 @@ export const spammer = async (dataBusAddress: string) => {
   const block = (await signer.provider.getBlock("latest")) as Block;
   const sdk = new DataBusSDK(
     dataBusAddress,
-    [
-      "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
-      "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
-      "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
-      "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
-      "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
-    ],
+    abi,
     signer
   );
+
   while (true) {
     await sendRandomMessage(sdk, block);
     await sleep(randomInt(1000, 2000));

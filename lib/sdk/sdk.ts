@@ -1,4 +1,6 @@
+import { Abi, ParseAbi } from "abitype";
 import { Contract, EventFragment, Interface, Provider, Signer } from "ethers";
+import { EventNames, EventsTypesResults, EventTypeResult } from "./types";
 
 export interface SDKParams {
   dataBusAddress: string;
@@ -6,14 +8,14 @@ export interface SDKParams {
   signer: Signer;
 }
 
-export class DataBusSDK {
+export class DataBusSDK<signatures extends readonly string[]> {
   private dataBusAddress: string;
   private eventsInterface: Interface;
   private provider: Provider;
   private eventsFragments: EventFragment[] = [];
   private dataBus: Contract;
 
-  constructor(dataBusAddress: string, eventsAbi: string[], signer: Signer) {
+  constructor(dataBusAddress: string, eventsAbi: signatures, signer: Signer) {
     this.dataBusAddress = dataBusAddress;
     this.eventsInterface = new Interface(eventsAbi);
     if (!signer.provider) {
@@ -30,7 +32,7 @@ export class DataBusSDK {
     );
   }
 
-  async sendMessage(eventName: string, data: any) {
+  async sendMessage(eventName: EventNames<ParseAbi<signatures>>, data: any) {
     const event = this.eventsFragments.find((ev) => ev.name === eventName);
     if (!event) {
       throw new Error(`event with name "${eventName}" not found`);
@@ -42,25 +44,25 @@ export class DataBusSDK {
     return tx;
   }
 
-  async get(
-    eventName: string,
+  async get<Name extends EventNames<ParseAbi<signatures>>>(
+    eventName: Name,
     blockFrom = 0,
     blockTo: number | string = "latest"
-  ) {
+  ): Promise<EventTypeResult<ParseAbi<signatures>, Name>[]> {
     const event = this.eventsFragments.find((ev) => ev.name === eventName);
     if (!event) {
       throw new Error(`event with name "${eventName}" not found`);
     }
 
-    return this.getByTopics([event.topicHash], blockFrom, blockTo);
+    return this.getByTopics([event.topicHash], blockFrom, blockTo) as unknown as Promise<EventTypeResult<ParseAbi<signatures>, Name>[]>;
   }
 
-  async getAll(blockFrom = 0, blockTo: number | string = "latest") {
+  async getAll(blockFrom = 0, blockTo: number | string = "latest"): Promise<EventsTypesResults<ParseAbi<signatures>>[]> {
     return this.getByTopics(
-      this.eventsFragments.map(({ topicHash }) => topicHash),
-      blockFrom,
-      blockTo
-    );
+        this.eventsFragments.map(({ topicHash }) => topicHash),
+        blockFrom,
+        blockTo
+    ) as unknown as Promise<EventsTypesResults<ParseAbi<signatures>>[]>;
   }
 
   private async getByTopics(
