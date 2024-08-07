@@ -94,6 +94,6 @@ export const spammer = async (dataBusAddress: string) => {
 
   while (true) {
     await sendRandomMessage(sdk, block);
-    await sleep(randomInt(1000, 2000));
+    await sleep(randomInt(5000, 10000));
   }
 };
