@@ -1,4 +1,4 @@
-import { ParseAbi } from "abitype";
+import { AbiParameterToPrimitiveType, ExtractAbiEvent, ParseAbi } from "abitype";
 import { Contract, EventFragment, Interface, Provider, Signer } from "ethers";
 import { EventNames, EventsTypesResults, EventTypeResult } from "./types";
 
@@ -32,7 +32,10 @@ export class DataBusSDK<signatures extends readonly string[]> {
     );
   }
 
-  async sendMessage(eventName: EventNames<ParseAbi<signatures>>, data: any) {
+  async sendMessage<evName extends EventNames<ParseAbi<signatures>>>(
+    eventName: evName,
+    data: AbiParameterToPrimitiveType<ExtractAbiEvent<ParseAbi<signatures>, evName>["inputs"][1]>
+  ) {
     const event = this.eventsFragments.find((ev) => ev.name === eventName);
     if (!event) {
       throw new Error(`event with name "${eventName}" not found`);
@@ -54,14 +57,21 @@ export class DataBusSDK<signatures extends readonly string[]> {
       throw new Error(`event with name "${eventName}" not found`);
     }
 
-    return this.getByTopics([event.topicHash], blockFrom, blockTo) as unknown as Promise<EventTypeResult<ParseAbi<signatures>, Name>[]>;
+    return this.getByTopics(
+      [event.topicHash],
+      blockFrom,
+      blockTo
+    ) as unknown as Promise<EventTypeResult<ParseAbi<signatures>, Name>[]>;
   }
 
-  async getAll(blockFrom = 0, blockTo: number | string = "latest"): Promise<EventsTypesResults<ParseAbi<signatures>>[]> {
+  async getAll(
+    blockFrom = 0,
+    blockTo: number | string = "latest"
+  ): Promise<EventsTypesResults<ParseAbi<signatures>>[]> {
     return this.getByTopics(
-        this.eventsFragments.map(({ topicHash }) => topicHash),
-        blockFrom,
-        blockTo
+      this.eventsFragments.map(({ topicHash }) => topicHash),
+      blockFrom,
+      blockTo
     ) as unknown as Promise<EventsTypesResults<ParseAbi<signatures>>[]>;
   }
 
@@ -85,7 +95,11 @@ export class DataBusSDK<signatures extends readonly string[]> {
       });
       if (!data) continue;
 
-      result.push({ ...data.args.toObject(true), name: data.name, txHash: log.transactionHash });
+      result.push({
+        ...data.args.toObject(true),
+        name: data.name,
+        txHash: log.transactionHash,
+      });
     }
 
     return result;

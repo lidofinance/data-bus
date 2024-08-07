@@ -9,7 +9,8 @@
     "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account",
     "monitoring": "ts-node monitoring/index.ts",
     "stand:default": "hardhat run scripts/run-testing-stand.ts",
-    "stand:monitoring": "hardhat run scripts/run-testing-stand-monitoring.ts"
+    "stand:monitoring": "hardhat run scripts/run-testing-stand-monitoring.ts",
+    "stand:testnet": "hardhat run scripts/run-testing-stand-testnet.ts --network chiado"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {

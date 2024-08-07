@@ -14,7 +14,7 @@ const abi = [
 const getVariants = (block: Block) => {
   const messages = [
     {
-      name: "MessagePing",
+      name: "MessagePing"as const,
       data: () => ({
         blockNumber: block.number,
         stakingModuleIds: [randomInt(1, 5), randomInt(6, 10)],
@@ -22,7 +22,7 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      name: "MessageDeposit",
+      name: "MessageDeposit"as const,
       data: () => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
@@ -34,7 +34,7 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      name: "MessageUnvet",
+      name: "MessageUnvet"as const,
       data: () => ({
         nonce: randomInt(1, 100),
         blockNumber: block.number,
@@ -47,7 +47,7 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      name: "MessagePauseV2",
+      name: "MessagePauseV2" as const,
       data: () => ({
         depositRoot: "0x" + "0".repeat(64),
         nonce: randomInt(1, 100),
@@ -59,7 +59,7 @@ const getVariants = (block: Block) => {
       }),
     },
     {
-      name: "MessagePauseV3",
+      name: "MessagePauseV3"as const,
       data: () => ({
         blockNumber: block.number,
         signature: "0x" + "0".repeat(130),
@@ -78,7 +78,7 @@ const sendRandomMessage = async <SDK extends DataBusSDK<typeof abi>>(
   const variants = getVariants(block);
   const message = variants[randomInt(0, variants.length - 1)];
   console.log(`Sending ${message.name} with random data.`);
-  const tx = await sdk.sendMessage(message.name as any, message.data());
+  const tx = await sdk.sendMessage(message.name, message.data() as any);
   await tx.wait();
   console.log(`${message.name} executed.`);
 };
@@ -94,6 +94,6 @@ export const spammer = async (dataBusAddress: string) => {
 
   while (true) {
     await sendRandomMessage(sdk, block);
-    await sleep(randomInt(1000, 2000));
+    await sleep(randomInt(5000, 10000));
   }
 };
