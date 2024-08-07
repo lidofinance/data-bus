@@ -1,7 +1,7 @@
 import { Block } from "ethers";
 import { ethers } from "hardhat";
 import { randomInt, sleep } from "./utils";
-import { DataBusSDK } from "../../lib/sdk/sdk";
+import { DataBusClient } from "../../client";
 
 const abi = [
   "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
@@ -71,7 +71,7 @@ const getVariants = (block: Block) => {
   return messages;
 };
 
-const sendRandomMessage = async <SDK extends DataBusSDK<typeof abi>>(
+const sendRandomMessage = async <SDK extends DataBusClient<typeof abi>>(
   sdk: SDK,
   block: Block
 ) => {
@@ -86,7 +86,7 @@ const sendRandomMessage = async <SDK extends DataBusSDK<typeof abi>>(
 export const spammer = async (dataBusAddress: string) => {
   const [signer] = await ethers.getSigners();
   const block = (await signer.provider.getBlock("latest")) as Block;
-  const sdk = new DataBusSDK(
+  const sdk = new DataBusClient(
     dataBusAddress,
     abi,
     signer

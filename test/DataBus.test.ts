@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
-import { DataBusSDK } from "../lib/sdk/sdk";
+import { DataBusClient } from "../client";
 
 const abi = [
   "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
@@ -14,14 +14,14 @@ const abi = [
 
 describe("DataBus", function () {
   let owner: Signer;
-  let sdk: DataBusSDK<typeof abi>;
+  let sdk: DataBusClient<typeof abi>;
 
   beforeEach(async function () {
     const DataBus = await ethers.getContractFactory("DataBus");
     [owner] = await ethers.getSigners();
     const dataBus = await DataBus.connect(owner).deploy();
 
-    sdk = new DataBusSDK(await dataBus.getAddress(), abi, owner);
+    sdk = new DataBusClient(await dataBus.getAddress(), abi, owner);
   });
 
   it("should measure gas for sendPingMessage", async function () {
