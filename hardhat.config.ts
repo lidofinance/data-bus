@@ -1,5 +1,4 @@
 import { HardhatUserConfig } from "hardhat/types";
-import { mochaRootHooks } from "./test/hooks";
 
 import "@nomicfoundation/hardhat-verify";
 import "@nomicfoundation/hardhat-ethers/types";
@@ -61,7 +60,6 @@ const config: HardhatUserConfig = {
   },
   mocha: {
     timeout: 40000,
-    rootHooks: mochaRootHooks,
   },
   typechain: {
     outDir: "typechain-types",

@@ -895,6 +895,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"abitype@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "abitype@npm:1.0.6"
+  peerDependencies:
+    typescript: ">=5.0.4"
+    zod: ^3 >=3.22.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    zod:
+      optional: true
+  checksum: 10c0/30ca97010bbf34b9aaed401858eeb6bc30419f7ff11eb34adcb243522dd56c9d8a9d3d406aa5d4f60a7c263902f5136043005698e3f073ea882a4922d43a2929
+  languageName: node
+  linkType: hard
+
 "acorn-walk@npm:^8.1.1":
   version: 8.3.3
   resolution: "acorn-walk@npm:8.3.3"
@@ -1614,6 +1629,7 @@ __metadata:
     "@types/mocha": "npm:^10.0.7"
     "@types/node": "npm:^22.0.0"
     "@types/readline-sync": "npm:^1"
+    abitype: "npm:^1.0.6"
     chai: "npm:^4.1.1"
     dotenv: "npm:^16.4.5"
     ethers: "npm:^6.13.2"

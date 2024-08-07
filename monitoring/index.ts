@@ -1,8 +1,6 @@
-import { DataBus__factory } from "../typechain-types";
-
 import { parseMonitoringConfig } from "../lib/config";
-import { JsonRpcProvider } from "ethers";
-import { parseEvents } from "../lib/sdk";
+import { JsonRpcProvider, Wallet } from "ethers";
+import { DataBusSDK } from "../lib/sdk/sdk";
 
 const MONITORING_BLOCK_OVERLAP = 200;
 
@@ -16,16 +14,26 @@ const generateRange = (
 
 async function main() {
   const envConfig = parseMonitoringConfig(process.env);
+
   console.log("Started with config:", envConfig);
 
   const provider = new JsonRpcProvider(envConfig.NODE_HOST);
-
   const alreadyIndexed: Record<string, boolean> = {};
-
-  const contract = DataBus__factory.connect(
+  const sdk = new DataBusSDK(
     envConfig.DATA_BUS_ADDRESS,
-    provider
+    [
+      "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+      "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
+      "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
+      "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data)",
+      "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
+    ] as const,
+    new Wallet(
+      "0x0000000000000000000000000000000000000000000000000000000000000001",
+      provider
+    )
   );
+
   setInterval(async () => {
     const startBlock = await provider.getBlock("latest");
     const [startBlockNumber, envBlockNumber] = generateRange(
@@ -38,16 +46,11 @@ async function main() {
       envBlockNumber
     );
 
-    const events = await parseEvents(
-      contract,
-      provider,
-      startBlockNumber,
-      envBlockNumber
-    );
+    const events = await sdk.getAll(startBlockNumber, envBlockNumber);
 
     events.map((event) => {
-      if (alreadyIndexed[event.idempotentKey]) return;
-      alreadyIndexed[event.idempotentKey] = true;
+      if (alreadyIndexed[event.txHash]) return;
+      alreadyIndexed[event.txHash] = true;
       console.log(event);
     });
   }, 5000);
