@@ -1,22 +1,34 @@
 # Data Bus
 This smart contract serves as an abstract data bus, which can be utilized to facilitate lightweight, inter-service communication.
 
-> [!NOTE]
-> The project is currently under development
-
 ## Features
 
+- ability to send arbitrary events with arbitrary data
 - minimalistic implementation
 - low gas consumption
 - does not require support and administration
 
 ## How it works
 
-The concept involves using an anonymous event to specify `eventId`, `sender`, and `data`.
+Here's the translation:
 
-- `eventId` consists of an arbitrary set of bytes. Additional logic can be implemented to encode the name and version.
-- `sender` is the transaction initiator. Without explicit authorization, it is assumed that the receiving side will filter based on known senders.
-- `data` represents arbitrary data encoded as `bytes`.
+---
+
+Each event in Ethereum consists of a list of topics and unindexed data. The first topic (topic 0) is usually the hash of the event signature (e.g., Deposit(address,uint256)), which helps identify the type of event. The other topics can be used to store the values of parameters that are marked as indexed in the event definition in the smart contract.
+
+Thus, when we emit the event `SomeEvent(address)`, it triggers a call `SomeEvent(id("SomeEvent(address)"), address)`. This happens not explicitly, but internally within the EVM.
+
+> How the `id` function works:
+
+```mermaid
+flowchart LR
+    A[Start of function id] --> B[Receive string value 'value']
+    B --> C[Convert 'value' to bytes]
+    C --> D[Apply KECCAK256 to bytes]
+    D --> E[Return hash value]
+```
+
+Our idea is that we create an abstract event that explicitly takes as the first argument the hash of the event signature, the second argument is `msg.sender`, and the third argument is abstractly specified as `bytes`.
 
 ```solidity
 event Message(
@@ -26,24 +38,28 @@ event Message(
 ) anonymous;
 ```
 
-To leverage this, you need to prepare the structures of your messages, for example:
+As you might have noticed, we added an `anonymous` modifier to the event. This modifier records the event in the blockchain without the zeroth topic with the event signature (`event Message(bytes32 indexed, address indexed, bytes)`). Instead, the `eventId` we passed as the first argument will be recorded.
 
-```ts
-tuple(uint256 blockNumber, uint256[] stakingModuleIds, tuple(string version, string name) app)
-```
-Next, prepare an event identifier, which can be any `bytes32` data, such as:
-
-```ts
-tuple(string name, uint16 version)
-```
-
-Then, you invoke the contract method:
+Next, we prepared the only method of the contract that emits the anonymous event.
 
 ```solidity
 function sendMessage(bytes32 _eventId, bytes calldata _data)
 ```
 
-Afterwards, you can subscribe to the contract's logs, decode the data, and utilize it as needed.
+To call it, you need to encode your own event signature, for example: `id(SomeEvent(address, bytes))`.
+Then encode your second argument, depending on the type.
+Afterward, you can call the `sendMessage` method and the result will be recorded in the blockchain.
+
+Most libraries for working with Ethereum out of the box will work with parsing event data, additional logic will be required if the second data argument represents something other than `bytes`. In such a case, you will need to do additional `encode` at the time of loading the event.
+
+For convenience and as an example, we prepared `DataBusClient`. This is an implementation of methods for reading and sending events, which operates based on human-readable ABI. This library is developed for TS, but it can be easily implemented in any language.
+
+You can familiarize yourself with the library implementation: [library](/client/index.ts)
+
+Also with usage examples:
+- [Simple event monitoring](monitoring/index.ts)
+- [Transaction spammer with arbitrary events](scripts/lib/spammer.ts)
+- [Implementation of tests](test/DataBus.test.ts)
 
 ## Building and testing
 Create .env file
