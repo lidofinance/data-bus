@@ -10,10 +10,6 @@ This smart contract serves as an abstract data bus, which can be utilized to fac
 
 ## How it works
 
-Here's the translation:
-
----
-
 Each event in Ethereum consists of a list of topics and unindexed data. The first topic (topic 0) is usually the hash of the event signature (e.g., Deposit(address,uint256)), which helps identify the type of event. The other topics can be used to store the values of parameters that are marked as indexed in the event definition in the smart contract.
 
 Thus, when we emit the event `SomeEvent(address)`, it triggers a call `SomeEvent(id("SomeEvent(address)"), address)`. This happens not explicitly, but internally within the EVM.
