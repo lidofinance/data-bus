@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
+    "outDir": "dist",
     "paths": {
       "lib": ["./lib"],
       "test": ["./test"],

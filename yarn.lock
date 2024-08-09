@@ -1551,6 +1551,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-bus-client@workspace:client":
+  version: 0.0.0-use.local
+  resolution: "data-bus-client@workspace:client"
+  dependencies:
+    abitype: "npm:^1.0.6"
+    ethers: "npm:^6.13.2"
+    typescript: "npm:^5.5.4"
+  languageName: unknown
+  linkType: soft
+
 "debug@npm:4, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.4, debug@npm:^4.3.5":
   version: 4.3.6
   resolution: "debug@npm:4.3.6"
@@ -1629,7 +1639,6 @@ __metadata:
     "@types/mocha": "npm:^10.0.7"
     "@types/node": "npm:^22.0.0"
     "@types/readline-sync": "npm:^1"
-    abitype: "npm:^1.0.6"
     chai: "npm:^4.1.1"
     dotenv: "npm:^16.4.5"
     ethers: "npm:^6.13.2"
