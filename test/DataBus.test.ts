@@ -5,11 +5,11 @@ import { getReceipt } from "./lib";
 import { DataBusClient } from "../client";
 
 const abi = [
-  "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
-  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version, string name) app) data)",
-  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version, string name) app) data)",
-  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version, string name) app) data111)",
-  "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version, string name) app) data)",
+  "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version) app) data)",
+  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version) app) data)",
+  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version) app) data)",
+  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version) app) data111)",
+  "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version) app) data)",
 ] as const;
 
 describe("DataBus", function () {
@@ -28,7 +28,7 @@ describe("DataBus", function () {
     const data = {
       blockNumber: 100n,
       stakingModuleIds: [1n, 2n],
-      app: { version: "1.0", name: "AppName" },
+      app: { version: "1.0" },
     };
 
     const tx = await sdk.sendMessage("MessagePing", data);
@@ -56,7 +56,7 @@ describe("DataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1n,
-      app: { version: "1.0", name: "AppName" },
+      app: { version: "1.0" },
     };
     const tx = await sdk.sendMessage("MessageDeposit", data as any);
     const receipt = await getReceipt(tx);
@@ -83,7 +83,7 @@ describe("DataBus", function () {
       signature: "0x" + "0".repeat(130),
       operatorIds: "operator1",
       vettedKeysByOperator: "keys",
-      app: { version: "1.0", name: "AppName" },
+      app: { version: "1.0" },
     };
     const tx = await sdk.sendMessage("MessageUnvet", data as any);
     const receipt = await getReceipt(tx);
@@ -109,7 +109,7 @@ describe("DataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1,
-      app: { version: "1.0", name: "AppName" },
+      app: { version: "1.0" },
     };
     const tx = await sdk.sendMessage("MessagePauseV2", data as any);
     const receipt = await getReceipt(tx);
@@ -131,7 +131,7 @@ describe("DataBus", function () {
     const data = {
       blockNumber: 100,
       signature: "0x" + "0".repeat(130),
-      app: { version: "1.0", name: "AppName" },
+      app: { version: "1.0" },
     };
     const tx = await sdk.sendMessage("MessagePauseV3", data as any);
     const receipt = await getReceipt(tx);
