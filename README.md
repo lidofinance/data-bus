@@ -1,5 +1,5 @@
-# Data Bus
-This smart contract serves as an abstract data bus, which can be utilized to facilitate lightweight, inter-service communication.
+# Data Bus Smart Contract
+This smart contract acts as a communication bridge, facilitating message exchange between various services on the blockchain.
 
 ## Features
 
@@ -8,23 +8,13 @@ This smart contract serves as an abstract data bus, which can be utilized to fac
 - low gas consumption
 - does not require support and administration
 
-## How it works
+## How It Works
 
-Each event in Ethereum consists of a list of topics and unindexed data. The first topic (topic 0) is usually the hash of the event signature (e.g., Deposit(address,uint256)), which helps identify the type of event. The other topics can be used to store the values of parameters that are marked as indexed in the event definition in the smart contract.
+In Ethereum, each event is described by a list of topics and additional unindexed data. The first topic (index) is a unique identifier for the type of event, generated from its name and parameters (e.g., `Deposit(address,uint256)`).
 
-Thus, when we emit the event `SomeEvent(address)`, it triggers a call `SomeEvent(id("SomeEvent(address)"), address)`. This happens not explicitly, but internally within the EVM.
+When we trigger an event such as `SomeEvent(address)`, it automatically leads to the creation of a record in the blockchain with the identifier and the sender's address.
 
-> How the `id` function works:
-
-```mermaid
-flowchart LR
-    A[Start of function id] --> B[Receive string value 'value']
-    B --> C[Convert 'value' to bytes]
-    C --> D[Apply KECCAK256 to bytes]
-    D --> E[Return hash value]
-```
-
-Our idea is that we create an abstract event that explicitly takes as the first argument the hash of the event signature, the second argument is `msg.sender`, and the third argument is abstractly specified as `bytes`.
+Example of an event in the contract:
 
 ```solidity
 event Message(
@@ -34,21 +24,19 @@ event Message(
 ) anonymous;
 ```
 
-As you might have noticed, we added an `anonymous` modifier to the event. This modifier records the event in the blockchain without the zeroth topic with the event signature (`event Message(bytes32 indexed, address indexed, bytes)`). Instead, the `eventId` we passed as the first argument will be recorded.
+The `anonymous` modifier indicates that the event will be recorded without using the standard signature. Instead, the event identifier `eventId` becomes the primary index. For more information on anonymous events, see the [Solidity documentation](https://docs.soliditylang.org/en/latest/abi-spec.html#events).
 
-Next, we prepared the only method of the contract that emits the anonymous event.
+The main function of the contract for sending messages:
 
 ```solidity
 function sendMessage(bytes32 _eventId, bytes calldata _data)
 ```
 
-To call it, you need to encode your own event signature, for example: `id(SomeEvent(address, bytes))`.
-Then encode your second argument, depending on the type.
-Afterward, you can call the `sendMessage` method and the result will be recorded in the blockchain.
+To use this function, you first need to encode your event signature (e.g., `keccak256(bytes('SomeEvent(address, bytes)'))`) and your data. Then, you invoke the `sendMessage` method to have the event recorded on the blockchain.
 
-Most libraries for working with Ethereum out of the box will work with parsing event data, additional logic will be required if the second data argument represents something other than `bytes`. In such a case, you will need to do additional `encode` at the time of loading the event.
+This mechanism is compatible with most Ethereum libraries for handling event data. If the data type differs from `bytes`, additional encoding may be required when retrieving the data.
 
-For convenience and as an example, we prepared `DataBusClient`. This is an implementation of methods for reading and sending events, which operates based on human-readable ABI. This library is developed for TS, but it can be easily implemented in any language.
+To assist users, we have developed `DataBusClient`, which consists of methods for reading and sending events using a user-friendly ABI (application binary interface). This library is developed in TypeScript but can be adapted for any programming language.
 
 You can familiarize yourself with the library implementation: [library](/client/index.ts)
 
