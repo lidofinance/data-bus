@@ -1,5 +1,5 @@
-# Data Bus Smart Contract
-This smart contract acts as a communication bridge, facilitating message exchange between various services on the blockchain.
+# Data Bus
+This smart contract functions as a communication channel on the blockchain, allowing for efficient message exchange between various services.
 
 ## Features
 
@@ -10,11 +10,11 @@ This smart contract acts as a communication bridge, facilitating message exchang
 
 ## How It Works
 
-In Ethereum, each event is described by a list of topics and additional unindexed data. The first topic (index) is a unique identifier for the type of event, generated from its name and parameters (e.g., `Deposit(address,uint256)`).
+The smart contract uses a special kind of event, referred to as an "abstract event," which can be customized to carry different types of data under various event identifiers. This flexibility allows the system to handle multiple event types through a single unified mechanism.
 
-When we trigger an event such as `SomeEvent(address)`, it automatically leads to the creation of a record in the blockchain with the identifier and the sender's address.
+### Abstract Event Design
 
-Example of an event in the contract:
+The event structure in the contract is defined as follows:
 
 ```solidity
 event Message(
@@ -24,19 +24,23 @@ event Message(
 ) anonymous;
 ```
 
-The `anonymous` modifier indicates that the event will be recorded without using the standard signature. Instead, the event identifier `eventId` becomes the primary index. For more information on anonymous events, see the [Solidity documentation](https://docs.soliditylang.org/en/latest/abi-spec.html#events).
+The `anonymous` attribute in this event means it does not use the standard topic for the event signature as is typical in Ethereum events. Instead, it utilizes a manually specified `eventId` as the primary identifier. This design allows the system to abstract away from specific event types, enabling users to define and emit any event type based on this generic template. For more details on anonymous events, you can refer to the [Solidity documentation](https://docs.soliditylang.org/en/latest/abi-spec.html#events).
 
-The main function of the contract for sending messages:
+### Emitting Events
+
+To emit an event, you first calculate the hash of your event signature (e.g., `keccak256(bytes('SomeEvent(address,bytes)'))`) which becomes the `eventId`. This identifier along with the data is then passed to the following function:
 
 ```solidity
 function sendMessage(bytes32 _eventId, bytes calldata _data)
 ```
 
-To use this function, you first need to encode your event signature (e.g., `keccak256(bytes('SomeEvent(address, bytes)'))`) and your data. Then, you invoke the `sendMessage` method to have the event recorded on the blockchain.
+This function takes the `eventId` and the data you want to transmit, and it logs the event on the blockchain. This method allows any user-defined event to be emitted using the `Message` event template, offering a flexible and powerful way to handle custom events.
 
-This mechanism is compatible with most Ethereum libraries for handling event data. If the data type differs from `bytes`, additional encoding may be required when retrieving the data.
+### Compatibility and Extensions
 
-To assist users, we have developed `DataBusClient`, which consists of methods for reading and sending events using a user-friendly ABI (application binary interface). This library is developed in TypeScript but can be adapted for any programming language.
+This setup is compatible with most Ethereum libraries, which handle the parsing of event data directly. If the event data requires specific types other than `bytes`, additional encoding steps may be necessary when processing or emitting events.
+
+Additionally, to facilitate the use of this contract, we have developed `DataBusClient`. This client library provides methods for both reading and sending events using a human-friendly ABI format. Initially developed in TypeScript, it can be easily ported to other programming languages to meet diverse implementation needs.
 
 You can familiarize yourself with the library implementation: [library](/client/index.ts)
 
