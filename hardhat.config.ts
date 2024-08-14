@@ -12,10 +12,9 @@ accountsPlugin(["gnosis", "chiado"]);
 const envConfig = parseContractEnvConfig(process.env);
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.24",
-//   defaultNetwork: 'local',
+  solidity: "0.8.26",
+  //   defaultNetwork: 'local',
   networks: {
-    
     // gnosis: networkWithSecureAccount("gnosis", {
     //   url: "https://rpc.gnosischain.com",
     // }),
@@ -52,10 +51,7 @@ const config: HardhatUserConfig = {
       },
     ],
     apiKey: {
-      //4) Insert your Gnosisscan API key
-      //blockscout explorer verification does not require keys
       chiado: envConfig.CHIADO_BLOCKSCOUT,
-      // gnosis: "your key",
     },
   },
   mocha: {
