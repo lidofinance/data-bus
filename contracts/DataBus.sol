@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.24;
+pragma solidity 0.8.26;
 
 /// @title A contract for sending and logging messages as an abstract data bus
 /// @notice This smart contract serves as an abstract data bus, which can be utilized to facilitate lightweight, inter-service communication.
@@ -19,7 +19,7 @@ contract DataBus {
     /// @dev Emits the `anonymous` event containing the message details; this method can be called by any sender to broadcast information
     /// @param _eventId The unique identifier for the message event
     /// @param _data The payload of the message to be sent
-    function sendMessage(bytes32 _eventId, bytes calldata _data) public {
+    function sendMessage(bytes32 _eventId, bytes calldata _data) external {
         emit Message(_eventId, msg.sender, _data);
     }
 }
