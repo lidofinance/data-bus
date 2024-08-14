@@ -2,14 +2,14 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
-import { DataBusClient } from "../client";
+import { Address, DataBusClient } from "../client";
 
 const abi = [
-  "event MessageDeposit(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version) app) data)",
-  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (string version) app) data)",
-  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (string version) app) data)",
-  "event MessagePing(address indexed guardianAddress, (uint256 blockNumber, uint256[] stakingModuleIds, (string version) app) data111)",
-  "event MessageUnvet(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, string operatorIds, string vettedKeysByOperator, (string version) app) data)",
+  "event MessageDepositV1(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (bytes32 version) app) data)",
+  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, bytes signature, uint256 stakingModuleId, (bytes32 version) app) data)",
+  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes signature, (bytes32 version) app) data)",
+  "event MessagePingV1(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) dataWithOtherKey)",
+  "event MessageUnvetV1(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, bytes signature, bytes32 operatorIds, bytes32 vettedKeysByOperator, (bytes32 version) app) data)",
 ] as const;
 
 describe("DataBus", function () {
@@ -27,11 +27,10 @@ describe("DataBus", function () {
   it("should measure gas for sendPingMessage", async function () {
     const data = {
       blockNumber: 100n,
-      stakingModuleIds: [1n, 2n],
-      app: { version: "1.0" },
+      app: { version: "0x" + "0".repeat(64) as Address },
     };
 
-    const tx = await sdk.sendMessage("MessagePing", data);
+    const tx = await sdk.sendMessage("MessagePingV1", data);
 
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
@@ -40,9 +39,9 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(29847);
 
-    const [event] = await sdk.get("MessagePing");
+    const [event] = await sdk.get("MessagePingV1");
 
-    expect(event.data111).to.deep.equal(data);
+    expect(event.dataWithOtherKey).to.deep.equal(data);
     expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
 
     expect(event).to.deep.equal((await sdk.getAll())[0]);
@@ -56,9 +55,9 @@ describe("DataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1n,
-      app: { version: "1.0" },
+      app: { version: "0x" + "0".repeat(64) },
     };
-    const tx = await sdk.sendMessage("MessageDeposit", data as any);
+    const tx = await sdk.sendMessage("MessageDepositV1", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -66,7 +65,7 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(31858);
 
-    const [event] = await sdk.get("MessageDeposit");
+    const [event] = await sdk.get("MessageDepositV1");
 
     expect(event.data).to.deep.equal(data);
     expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
@@ -81,11 +80,11 @@ describe("DataBus", function () {
       blockHash: encodeBytes32String("hash"),
       stakingModuleId: 1,
       signature: "0x" + "0".repeat(130),
-      operatorIds: "operator1",
-      vettedKeysByOperator: "keys",
-      app: { version: "1.0" },
+      operatorIds: encodeBytes32String("operator1"),
+      vettedKeysByOperator: encodeBytes32String("keys"),
+      app: { version: "0x" + "0".repeat(64) as Address },
     };
-    const tx = await sdk.sendMessage("MessageUnvet", data as any);
+    const tx = await sdk.sendMessage("MessageUnvetV1", data as any);
     const receipt = await getReceipt(tx);
     const { gasUsed } = receipt;
 
@@ -93,7 +92,7 @@ describe("DataBus", function () {
 
     expect(gasUsed).to.be.lessThanOrEqual(34024);
 
-    const [event] = await sdk.get("MessageUnvet");
+    const [event] = await sdk.get("MessageUnvetV1");
 
     expect(event.data).to.deep.equal(data);
     expect(event.guardianAddress).to.deep.equal(await owner.getAddress());
@@ -109,7 +108,7 @@ describe("DataBus", function () {
       blockHash: encodeBytes32String("hash"),
       signature: "0x" + "0".repeat(130),
       stakingModuleId: 1,
-      app: { version: "1.0" },
+      app: { version: "0x" + "0".repeat(64) as Address },
     };
     const tx = await sdk.sendMessage("MessagePauseV2", data as any);
     const receipt = await getReceipt(tx);
@@ -131,7 +130,7 @@ describe("DataBus", function () {
     const data = {
       blockNumber: 100,
       signature: "0x" + "0".repeat(130),
-      app: { version: "1.0" },
+      app: { version: "0x" + "0".repeat(64) as Address },
     };
     const tx = await sdk.sendMessage("MessagePauseV3", data as any);
     const receipt = await getReceipt(tx);
