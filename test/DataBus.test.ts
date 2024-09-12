@@ -3,13 +3,14 @@ import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
 import { Address, DataBusClient } from "../client";
+import {randomInt} from "../scripts/lib/utils";
 
 const abi = [
-  "event MessageDepositV1(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, uint256 stakingModuleId, (bytes32 version) app) data)",
-  "event MessagePauseV2(address indexed guardianAddress, (bytes32 depositRoot, uint256 nonce, uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, uint256 stakingModuleId, (bytes32 version) app) data)",
+  "event MessageDepositV1(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, bytes32 depositRoot, uint256 stakingModuleId, uint256 nonce, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
+  "event MessagePauseV2(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, uint256 stakingModuleId, (bytes32 version) app) data)",
   "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
   "event MessagePingV1(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) dataWithOtherKey)",
-  "event MessageUnvetV1(address indexed guardianAddress, (uint256 nonce, uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, (bytes32 r, bytes32 vs) signature, bytes32 operatorIds, bytes32 vettedKeysByOperator, (bytes32 version) app) data)",
+  "event MessageUnvetV1(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, uint256 nonce, bytes operatorIds, bytes vettedKeysByOperator, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
 ] as const;
 
 describe("DataBus", function () {
@@ -49,12 +50,12 @@ describe("DataBus", function () {
 
   it("should measure gas for sendDepositMessage", async function () {
     const data = {
-      depositRoot: "0x" + "0".repeat(64),
-      nonce: 1n,
       blockNumber: 100n,
       blockHash: encodeBytes32String("hash"),
-      signature: {r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
+      depositRoot: "0x" + "0".repeat(64),
       stakingModuleId: 1n,
+      nonce: 1n,
+      signature: {r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
       app: { version: "0x" + "0".repeat(64) },
     };
     const tx = await sdk.sendMessage("MessageDepositV1", data as any);
@@ -75,13 +76,13 @@ describe("DataBus", function () {
 
   it("should measure gas for sendUnvetMessage", async function () {
     const data = {
-      nonce: 1,
       blockNumber: 100,
       blockHash: encodeBytes32String("hash"),
       stakingModuleId: 1,
-      signature: {r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
+      nonce: 1,
       operatorIds: encodeBytes32String("operator1"),
       vettedKeysByOperator: encodeBytes32String("keys"),
+      signature: {r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
       app: { version: "0x" + "0".repeat(64) as Address },
     };
     const tx = await sdk.sendMessage("MessageUnvetV1", data as any);
@@ -102,8 +103,6 @@ describe("DataBus", function () {
 
   it("should measure gas for sendPauseMessageV2", async function () {
     const data = {
-      depositRoot: "0x" + "0".repeat(64),
-      nonce: 1,
       blockNumber: 100,
       blockHash: encodeBytes32String("hash"),
       signature: {r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
