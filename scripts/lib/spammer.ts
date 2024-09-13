@@ -6,7 +6,7 @@ import { Address, DataBusClient } from "../../client";
 const abi = [
   "event MessageDepositV1(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, bytes32 depositRoot, uint256 stakingModuleId, uint256 nonce, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
   "event MessagePauseV2(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, uint256 stakingModuleId, (bytes32 version) app) data)",
-  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
+  "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
   "event MessagePingV1(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) data)",
   "event MessageUnvetV1(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, uint256 stakingModuleId, uint256 nonce, bytes operatorIds, bytes vettedKeysByOperator, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
 ] as const;
@@ -41,10 +41,10 @@ const getVariants = (block: Block) => {
         stakingModuleId: randomInt(1, 5),
         nonce: randomInt(1, 100),
         operatorIds: encodeBytes32String(
-            "operator" + randomInt(1, 10).toString()
+          "operator" + randomInt(1, 10).toString()
         ),
         vettedKeysByOperator: encodeBytes32String(
-            "keys" + randomInt(1, 10).toString()
+          "keys" + randomInt(1, 10).toString()
         ),
         signature: { r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
         app: { version: "0x" + "0".repeat(64) as Address },
@@ -64,6 +64,7 @@ const getVariants = (block: Block) => {
       name: "MessagePauseV3" as const,
       data: () => ({
         blockNumber: block.number,
+        blockHash: block.hash as string,
         signature: { r: "0x" + "0".repeat(64), vs: "0x" + "0".repeat(64) },
         app: { version: "0x" + "0".repeat(64) as Address },
       }),
