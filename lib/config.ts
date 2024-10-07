@@ -7,6 +7,7 @@ const EnvContractSchema = z.object({
   CHIADO_BLOCKSCOUT: z.string(),
   GNOSISSCAN: z.string(),
   POLYGONSCAN: z.string(),
+  OPTIMISTICSCAN: z.string(),
   NODE_HOST: z.string(),
   PK_KEY: z.string(),
 });
@@ -25,6 +26,7 @@ export const parseContractEnvConfig = (env: NodeJS.ProcessEnv): EnvContract =>
     CHIADO_BLOCKSCOUT: env.CHIADO_BLOCKSCOUT,
     GNOSISSCAN: env.GNOSISSCAN,
     POLYGONSCAN: env.POLYGONSCAN,
+    OPTIMISTICSCAN: env.OPTIMISTICSCAN,
     NODE_HOST: env.NODE_HOST,
     PK_KEY: env.PK_KEY
   });
