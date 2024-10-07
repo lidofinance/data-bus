@@ -1,16 +1,19 @@
 import { HardhatUserConfig } from "hardhat/types";
 
 import "@nomicfoundation/hardhat-verify";
+import "@nomicfoundation/hardhat-ignition-ethers";
 import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
+
 import { parseContractEnvConfig } from "./lib/config";
+import { encodeBytes32String } from "ethers";
 
 // accountsPlugin(["gnosis", "chiado"]);
 
 const envConfig = parseContractEnvConfig(process.env);
 
-const config: HardhatUserConfig = {
+const config: any = {
   solidity: "0.8.26",
   //   defaultNetwork: 'local',
   networks: {
@@ -57,6 +60,14 @@ const config: HardhatUserConfig = {
   },
   mocha: {
     timeout: 40000,
+  },
+  ignition: {
+    strategyConfig: {
+      create2: {
+        // To learn more about salts, see the CreateX documentation
+        salt: encodeBytes32String('data bus deploy 1.0'),
+      },
+    },
   },
   typechain: {
     outDir: "typechain-types",
