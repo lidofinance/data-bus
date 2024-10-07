@@ -6,6 +6,7 @@ dotenv.config();
 const EnvContractSchema = z.object({
   CHIADO_BLOCKSCOUT: z.string(),
   NODE_HOST: z.string(),
+  PK_KEY: z.string(),
 });
 
 export type EnvContract = z.infer<typeof EnvContractSchema>;
@@ -21,6 +22,7 @@ export const parseContractEnvConfig = (env: NodeJS.ProcessEnv): EnvContract =>
   EnvContractSchema.parse({
     CHIADO_BLOCKSCOUT: env.CHIADO_BLOCKSCOUT,
     NODE_HOST: env.NODE_HOST,
+    PK_KEY: env.PK_KEY
   });
 
 export const parseMonitoringConfig = (env: NodeJS.ProcessEnv): EnvMonitoring =>

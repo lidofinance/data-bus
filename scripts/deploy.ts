@@ -1,7 +1,10 @@
 import { deploy } from "./lib/deploy";
+import { sendTestTx } from "./lib/test-tx";
 
 async function main() {
-  await deploy();
+  const contract = await deploy();
+
+  await sendTestTx(await contract.getAddress());
 }
 
 main().catch((error) => {

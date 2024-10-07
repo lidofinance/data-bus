@@ -91,7 +91,7 @@ yarn stand:monitoring
 ## Deploy
 
 ### Chiado — gnosis testnet
-> Already deployed: https://gnosis-chiado.blockscout.com/address/0x42E1DEfC18388E3AA1fCADa851499A11405cf37f?tab=txs
+> Already deployed: https://gnosis-chiado.blockscout.com/address/0xf21Ea6AADb7479d2B9301f190a68A2C36738A0d2#code
 1. Create account
 ```sh
 yarn create-account --network chiado
