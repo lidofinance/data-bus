@@ -60,6 +60,22 @@ const config: any = {
         
       },
       {
+        network: "optimism",
+        chainId: 10,
+        urls: {
+          apiURL: "https://api.optimistic.etherscan.io/api",
+          browserURL: "https://optimistic.etherscan.io"
+        }
+      },
+      {
+        network: "polygon",
+        chainId: 137,
+        urls: {
+          apiURL: "https://api.polygonscan.com/api",
+          browserURL: "https://polygonscan.com"
+        }
+      },
+      {
         network: "base-mainnet",
         chainId: 8453,
         urls: {
@@ -72,6 +88,8 @@ const config: any = {
       chiado: envConfig.CHIADO_BLOCKSCOUT,
       gnosis: envConfig.GNOSISSCAN,
       "base-mainnet": envConfig.BASESCAN,
+      optimism: envConfig.OPTIMISTICSCAN,
+      polygon: envConfig.POLYGONSCAN
     },
   },
   mocha: {
