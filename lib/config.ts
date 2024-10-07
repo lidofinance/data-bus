@@ -8,6 +8,7 @@ const EnvContractSchema = z.object({
   GNOSISSCAN: z.string(),
   POLYGONSCAN: z.string(),
   OPTIMISTICSCAN: z.string(),
+  BASESCAN: z.string(),
   NODE_HOST: z.string(),
   PK_KEY: z.string(),
 });
@@ -27,6 +28,7 @@ export const parseContractEnvConfig = (env: NodeJS.ProcessEnv): EnvContract =>
     GNOSISSCAN: env.GNOSISSCAN,
     POLYGONSCAN: env.POLYGONSCAN,
     OPTIMISTICSCAN: env.OPTIMISTICSCAN,
+    BASESCAN: env.BASESCAN,
     NODE_HOST: env.NODE_HOST,
     PK_KEY: env.PK_KEY
   });
