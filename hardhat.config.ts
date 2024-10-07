@@ -30,6 +30,12 @@ const config: any = {
       gasPrice: 1000000000,
       accounts: [envConfig.PK_KEY],
     },
+
+    'base-mainnet': {
+      url: 'https://mainnet.base.org',
+      accounts: [process.env.WALLET_KEY as string],
+      gasPrice: 1000000000,
+    },
   },
   etherscan: {
     customChains: [
@@ -51,11 +57,21 @@ const config: any = {
           //apiURL: "https://blockscout.com/xdai/mainnet/api",
           //browserURL: "https://blockscout.com/xdai/mainnet",
         },
+        
       },
+      {
+        network: "base-mainnet",
+        chainId: 8453,
+        urls: {
+         apiURL: "https://api.basescan.org/api",
+         browserURL: "https://basescan.org"
+        }
+      }
     ],
     apiKey: {
       chiado: envConfig.CHIADO_BLOCKSCOUT,
       gnosis: envConfig.GNOSISSCAN,
+      "base-mainnet": envConfig.BASESCAN,
     },
   },
   mocha: {
