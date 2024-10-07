@@ -3,20 +3,20 @@ import { ethers } from "hardhat";
 import { Address, DataBusClient } from "../../client";
 
 const abi = [
-  "event MessagePingV1(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) data)",
+  "event InitialTestEvent(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) data)",
 ] as const;
 
 const sendRandomMessage = async <SDK extends DataBusClient<typeof abi>>(
   sdk: SDK,
   block: Block
 ) => {
-  console.log(`Sending MessagePingV1 with random data.`);
-  const tx = await sdk.sendMessage("MessagePingV1", {
+  console.log(`Sending InitialTestEvent with random data.`);
+  const tx = await sdk.sendMessage("InitialTestEvent", {
     blockNumber: BigInt(block.number),
     app: { version: ("0x" + "0".repeat(64)) as Address },
   });
   await tx.wait();
-  console.log(`MessagePingV1 executed.`);
+  console.log(`InitialTestEvent executed.`);
 };
 
 export const sendTestTx = async (dataBusAddress: string) => {

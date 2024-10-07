@@ -1,4 +1,4 @@
-import { parseMonitoringConfig } from "lib/config";
+import { parseMonitoringConfig } from "../lib/config";
 import { sendTestTx } from "./lib/test-tx";
 
 const envConfig = parseMonitoringConfig(process.env);
