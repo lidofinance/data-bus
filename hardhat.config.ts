@@ -31,6 +31,18 @@ const config: any = {
       accounts: [envConfig.PK_KEY],
     },
 
+    optimism: {
+      url: "https://optimism-rpc.publicnode.com",
+      gasPrice: 1000000000,
+      accounts: [envConfig.PK_KEY],
+    },
+
+    polygon: {
+      url: "https://polygon-bor-rpc.publicnode.com",
+      gasPrice: 1000000000,
+      accounts: [envConfig.PK_KEY],
+    },
+
     'base-mainnet': {
       url: 'https://mainnet.base.org',
       accounts: [process.env.WALLET_KEY as string],
