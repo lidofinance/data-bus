@@ -13,23 +13,27 @@ import { addForking } from "./lib/add-forking";
 
 const envConfig = parseContractEnvConfig(process.env);
 
+// https://chainlist.org/chain/10200
 const baseNetworks = {
   gnosis: {
     url: "https://rpc.gnosischain.com",
     accounts: [envConfig.PK_KEY],
   },
   chiado: {
-    url: "https://gnosis-chiado-rpc.publicnode.com",
+    // https://1rpc.io/gnosis
+    url: "https://rpc.chiado.gnosis.gateway.fm",
     gasPrice: 1000000000,
     accounts: [envConfig.PK_KEY],
   },
   optimism: {
-    url: "https://optimism-rpc.publicnode.com",
+    url: "https://mainnet.optimism.io",
     gasPrice: 1000000000,
     accounts: [envConfig.PK_KEY],
   },
   polygon: {
-    url: "https://polygon-bor-rpc.publicnode.com",
+    // https://polygon.drpc.org
+    // https://polygon-bor-rpc.publicnode.com
+    url: "https://polygon.drpc.org",
     gasPrice: 1000000000,
     accounts: [envConfig.PK_KEY],
   },
@@ -108,7 +112,7 @@ const config: any = {
     strategyConfig: {
       create2: {
         // To learn more about salts, see the CreateX documentation
-        salt: encodeBytes32String("data bus deploy 1.0"),
+        salt: encodeBytes32String("dsm data bus deploy 1.0"),
       },
     },
   },
