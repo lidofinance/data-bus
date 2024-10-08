@@ -76,7 +76,7 @@ const config: any = {
         network: "optimism",
         chainId: 10,
         urls: {
-          apiURL: "https://api.optimistic.etherscan.io/api",
+          apiURL: "https://api-optimistic.etherscan.io/api",
           browserURL: "https://optimistic.etherscan.io",
         },
       },
