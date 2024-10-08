@@ -52,8 +52,16 @@ Also with usage examples:
 ## Building and testing
 Create .env file
 ```sh
-CHIADO_BLOCKSCOUT=<your key from https://gnosis-chiado.blockscout.com>
+CHIADO_BLOCKSCOUT=
+GNOSISSCAN=
+POLYGONSCAN=
+OPTIMISTICSCAN=
+BASESCAN=
+
 NODE_HOST=http://127.0.0.1:8888
+DATA_BUS_ADDRESS=''
+
+PK_KEY=0x
 ```
 
 Install the dependencies
@@ -90,19 +98,18 @@ yarn stand:monitoring
 
 ## Deploy
 
-### Chiado — gnosis testnet
-> Already deployed: https://gnosis-chiado.blockscout.com/address/0xf21Ea6AADb7479d2B9301f190a68A2C36738A0d2#code
-1. Create account
-```sh
-yarn create-account --network chiado
-```
-2. Visit website https://faucet.chiadochain.net/ and earn some xDAI
-3. Deploy
+The contract has already been partitioned at the address `0x37De961D6bb5865867aDd416be07189D2Dd960e6` on the networks:
+| Blockchain | Block Explorer Link                                       |
+|------------|-----------------------------------------------------------|
+| Chaido     | [View on Chaido Explorer](https://gnosis-chiado.blockscout.com/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
+| Gnosis     | [View on Gnosis Chain Explorer](https://blockscout.com/xdai/mainnet/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
+| Base       | [View on Base Scan](https://basescan.org/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
+| Optimism   | [View on Optimistic Ethereum Explorer](https://optimistic.etherscan.io/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
+| Polygon    | [View on PolygonScan](https://polygonscan.com/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
 
-```sh
-yarn deploy --network chiado
-```
-4. (Optional) Run Testing Stand
+
+1. Run `./deploy/network.sh`
+2. (Optional) Run Testing Stand
 
 The testing stand consists of:
 - transaction spammer
