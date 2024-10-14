@@ -7,10 +7,12 @@
     "abi": "hardhat run scripts/abi.ts",
     "local-node": "hardhat run scripts/local-node.ts",
     "create-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account",
+    "add-account": "HH_LOAD_ACCOUNT_DISABLED=true hardhat create-account",
     "monitoring": "ts-node monitoring/index.ts",
     "stand:default": "hardhat run scripts/run-testing-stand.ts",
     "stand:monitoring": "hardhat run scripts/run-testing-stand-monitoring.ts",
-    "stand:testnet": "hardhat run scripts/run-testing-stand-testnet.ts --network chiado"
+    "stand:testnet": "hardhat run scripts/run-testing-stand-testnet.ts --network chiado",
+    "top-up:holesky": "hardhat run scripts/top-up-guardians.ts"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {
@@ -36,6 +38,9 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.6",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.6",
+    "@nomicfoundation/ignition-core": "^0.15.6",
     "zod": "^3.23.8"
   }
 }

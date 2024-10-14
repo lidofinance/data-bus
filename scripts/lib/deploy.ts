@@ -30,7 +30,11 @@ export const deploy = async () => {
 
   console.log("Contract deployed at:", await contract.getAddress());
 
+ try {
   await verify(await contract.getAddress());
+ } catch(error) {
+  console.error(error)
+ }
 
   return contract;
 };
