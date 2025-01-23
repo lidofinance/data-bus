@@ -50,6 +50,10 @@ const config: any = {
   networks: {
     ...baseNetworks,
     hardhat: addForking({}, baseNetworks),
+    "local-devnet": {
+      url: envConfig.DEVNET_RPC,
+      accounts: [envConfig.PK_KEY],
+    }
   },
   etherscan: {
     customChains: [
@@ -96,6 +100,14 @@ const config: any = {
           browserURL: "https://basescan.org",
         },
       },
+      {
+        network: "local-devnet",
+        chainId: 32382,
+        urls: {
+          apiURL: "http://localhost:3080/api",
+          browserURL: "http://localhost:3080",
+        },
+      }
     ],
     apiKey: {
       chiado: envConfig.CHIADO_BLOCKSCOUT,
@@ -103,6 +115,7 @@ const config: any = {
       "base-mainnet": envConfig.BASESCAN,
       optimism: envConfig.OPTIMISTICSCAN,
       polygon: envConfig.POLYGONSCAN,
+      "local-devnet": "local-devnet",
     },
   },
   mocha: {

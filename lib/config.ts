@@ -5,13 +5,14 @@ dotenv.config();
 
 const EnvContractSchema = z.object({
   FORKING_NETWORK: z.string().optional(),
-  CHIADO_BLOCKSCOUT: z.string(),
-  GNOSISSCAN: z.string(),
-  POLYGONSCAN: z.string(),
-  OPTIMISTICSCAN: z.string(),
-  BASESCAN: z.string(),
-  NODE_HOST: z.string(),
+  CHIADO_BLOCKSCOUT: z.string().optional(),
+  GNOSISSCAN: z.string().optional(),
+  POLYGONSCAN: z.string().optional(),
+  OPTIMISTICSCAN: z.string().optional(),
+  BASESCAN: z.string().optional(),
+  NODE_HOST: z.string().optional(),
   PK_KEY: z.string(),
+  DEVNET_RPC: z.string().optional()
 });
 
 export type EnvContract = z.infer<typeof EnvContractSchema>;
@@ -33,6 +34,7 @@ export const parseContractEnvConfig = (env: NodeJS.ProcessEnv): EnvContract =>
     BASESCAN: env.BASESCAN,
     NODE_HOST: env.NODE_HOST,
     PK_KEY: env.PK_KEY,
+    DEVNET_RPC: env.DEVNET_RPC
   });
 
 export const parseMonitoringConfig = (env: NodeJS.ProcessEnv): EnvMonitoring =>
