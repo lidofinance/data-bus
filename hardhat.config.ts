@@ -1,4 +1,3 @@
-
 import { parseContractEnvConfig } from "./lib/config";
 
 import "@nomicfoundation/hardhat-verify";
@@ -6,7 +5,6 @@ import "@nomicfoundation/hardhat-ignition-ethers";
 import "@nomicfoundation/hardhat-ethers/types";
 import "@typechain/hardhat";
 import "@nomicfoundation/hardhat-chai-matchers";
-
 
 import { encodeBytes32String } from "ethers";
 import { addForking } from "./lib/add-forking";
@@ -53,7 +51,7 @@ const config: any = {
     "local-devnet": {
       url: envConfig.DEVNET_RPC,
       accounts: [envConfig.PK_KEY],
-    }
+    },
   },
   etherscan: {
     customChains: [
@@ -102,12 +100,12 @@ const config: any = {
       },
       {
         network: "local-devnet",
-        chainId: 32382,
+        chainId: envConfig.DEVNET_CHAINID ?? 32382,
         urls: {
-          apiURL: "http://localhost:3080/api",
-          browserURL: "http://localhost:3080",
+          apiURL: envConfig.DEVNET_EXPLORER_API,
+          browserURL: envConfig.DEVNET_EXPLORER,
         },
-      }
+      },
     ],
     apiKey: {
       chiado: envConfig.CHIADO_BLOCKSCOUT,

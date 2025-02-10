@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { writeFile, mkdir } from "node:fs/promises";
 import { deploy } from "./lib/deploy";
 import { sendTestTx } from "./lib/test-tx";
 import path from "node:path";
@@ -11,10 +11,13 @@ async function main() {
 
   // await sendTestTx(address);
 
+  const deployedPath = path.join("deployed", `${network.name}.json`);
+
+  await mkdir("deployed", { recursive: true });
   await writeFile(
-    path.join("deployed", `${network.name}.json`),
+    deployedPath,
     JSON.stringify({ contract: { address } }),
-    "utf8"
+    "utf8",
   );
 }
 

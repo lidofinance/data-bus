@@ -12,7 +12,10 @@ const EnvContractSchema = z.object({
   BASESCAN: z.string().optional(),
   NODE_HOST: z.string().optional(),
   PK_KEY: z.string(),
-  DEVNET_RPC: z.string().optional()
+  DEVNET_RPC: z.string().optional(),
+  DEVNET_EXPLORER_API: z.string().optional(),
+  DEVNET_EXPLORER: z.string().optional(),
+  DEVNET_CHAINID: z.number().optional(),
 });
 
 export type EnvContract = z.infer<typeof EnvContractSchema>;
@@ -34,7 +37,11 @@ export const parseContractEnvConfig = (env: NodeJS.ProcessEnv): EnvContract =>
     BASESCAN: env.BASESCAN,
     NODE_HOST: env.NODE_HOST,
     PK_KEY: env.PK_KEY,
-    DEVNET_RPC: env.DEVNET_RPC
+
+    DEVNET_RPC: env.DEVNET_RPC,
+    DEVNET_CHAINID: env.DEVNET_CHAINID,
+    DEVNET_EXPLORER: env.DEVNET_EXPLORER,
+    DEVNET_EXPLORER_API: env.DEVNET_EXPLORER_API,
   });
 
 export const parseMonitoringConfig = (env: NodeJS.ProcessEnv): EnvMonitoring =>

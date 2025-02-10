@@ -1,14 +1,15 @@
 import { ethers, run, config, network } from "hardhat";
+import { sleep } from "./utils";
 
 const verify = async (address: string) => {
   const currentNetworkName = network.name;
   const verifyParamsExists = config.etherscan.customChains.find(
-    ({ network }) => currentNetworkName === network
+    ({ network }) => currentNetworkName === network,
   );
 
   if (!verifyParamsExists) {
     console.log(
-      `Not found config for "${currentNetworkName}" chain, etherscan verify skipped`
+      `Not found config for "${currentNetworkName}" chain, etherscan verify skipped`,
     );
     return;
   }
@@ -30,11 +31,13 @@ export const deploy = async () => {
 
   console.log("Contract deployed at:", await contract.getAddress());
 
- try {
-  await verify(await contract.getAddress());
- } catch(error) {
-  console.error(error)
- }
+  await sleep(5000);
+
+  try {
+    await verify(await contract.getAddress());
+  } catch (error) {
+    console.error(error);
+  }
 
   return contract;
 };
