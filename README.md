@@ -106,6 +106,7 @@ The contract has already been partitioned at the address `0x37De961D6bb5865867aD
 | Base       | [View on Base Scan](https://basescan.org/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
 | Optimism   | [View on Optimistic Ethereum Explorer](https://optimistic.etherscan.io/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
 | Polygon    | [View on PolygonScan](https://polygonscan.com/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
+| Hoodi    | [View on Etherscan](https://hoodi.etherscan.io/address/0x37De961D6bb5865867aDd416be07189D2Dd960e6) |
 
 
 1. Run `./deploy/network.sh`
