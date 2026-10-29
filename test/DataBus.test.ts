@@ -3,10 +3,9 @@ import { ethers } from "hardhat";
 import { encodeBytes32String, Signer } from "ethers";
 import { getReceipt } from "./lib";
 import { Address, DataBusClient } from "../client";
-import {randomInt} from "../scripts/lib/utils";
 
 const abi = [
-  "event MessageDepositV1(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, bytes32 depositRoot, uint256 stakingModuleId, uint256 nonce, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
+  "event MessageDepositV1(address indexed guardianAddress, (uint256 payloadStart, uint256 payloadLength, uint256 blockNumber, bytes32 blockHash, bytes32 depositRoot, uint256 stakingModuleId, uint256 nonce, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
   "event MessagePauseV2(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, uint256 stakingModuleId, (bytes32 version) app) data)",
   "event MessagePauseV3(address indexed guardianAddress, (uint256 blockNumber, bytes32 blockHash, (bytes32 r, bytes32 vs) signature, (bytes32 version) app) data)",
   "event MessagePingV1(address indexed guardianAddress, (uint256 blockNumber, (bytes32 version) app) dataWithOtherKey)",
@@ -48,7 +47,7 @@ describe("DataBus", function () {
     expect(event).to.deep.equal((await sdk.getAll())[0]);
   });
 
-  it("should measure gas for sendDepositMessage", async function () {
+  it.only("should measure gas for sendDepositMessage", async function () {
     const data = {
       blockNumber: 100n,
       blockHash: encodeBytes32String("hash"),

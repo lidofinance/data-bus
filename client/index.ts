@@ -43,7 +43,7 @@ export class DataBusClient<signatures extends readonly string[]> {
       throw new Error(`event with name "${eventName}" not found`);
     }
     const coder = this.eventsInterface.getAbiCoder();
-    const dataBytes = coder.encode([event.inputs[1].format("full")], [data]);
+    const dataBytes = coder.encode(['bytes'], [data]);
     const tx = await this.dataBus.sendMessage(event.topicHash, dataBytes);
     await tx.wait();
     return tx;
@@ -93,7 +93,7 @@ export class DataBusClient<signatures extends readonly string[]> {
     for (const log of logs) {
       const data = this.eventsInterface.parseLog({
         ...log,
-        data: this.eventsInterface.getAbiCoder().decode(["bytes"], log.data)[0],
+        // data: this.eventsInterface.getAbiCoder().decode(["bytes"], log.data)[0],
       });
       if (!data) continue;
 
